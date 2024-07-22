@@ -2,6 +2,7 @@ package io.github.x1111101101.account.route
 
 import io.github.x1111101101.account.vo.UserRegister
 import io.github.x1111101101.account.service.UserService
+import io.github.x1111101101.account.vo.UserLoginRequest
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -20,11 +21,16 @@ fun Application.routeAccounts() {
 
 private fun Route.routeUsers() {
     route("user") {
-        get("signup") {
+        post("signup") {
             val json = call.receiveText().decodeBase64Bytes().decodeToString()
             val userRegister: UserRegister = Json.decodeFromString(json)
             val respond = UserService.signup(userRegister)
             call.respondText(Json.encodeToString(respond))
+        }
+        post("login") {
+            val json = call.receiveText().decodeBase64Bytes().decodeToString()
+            val request: UserLoginRequest = Json.decodeFromString(json)
+            val respond = UserService.signin(request)
         }
     }
 }

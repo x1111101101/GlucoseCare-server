@@ -35,7 +35,7 @@ class SessionRepository {
         initSessionTable()
     }
 
-    fun createSession(userLoginId: String): Session? {
+    fun createSession(userLoginId: String): Session {
         val id = UUID.randomUUID()
         transaction {
             Sessions.insert {
@@ -44,7 +44,7 @@ class SessionRepository {
                 it[Sessions.createdTime] = currentMillis()
             }
         }
-        return getSession(id)
+        return getSession(id) ?: throw IllegalStateException()
     }
 
     fun getSession(uuid: UUID): Session? {
