@@ -1,5 +1,6 @@
 package io.github.x1111101101
 
+import io.github.x1111101101.account.route.routeAccounts
 import io.github.x1111101101.food.route.routeFoods
 import io.github.x1111101101.medicine.route.routeMedicines
 import io.ktor.server.application.*
@@ -7,6 +8,7 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.jetbrains.exposed.sql.Database
 
 fun main() {
     init()
@@ -16,6 +18,7 @@ fun main() {
 }
 
 private fun init() {
+    Database.connect("jdbc:sqlite:local.db", driver = "org.sqlite.JDBC")
     initGoogleCloud()
 }
 
@@ -30,5 +33,6 @@ fun Application.module() {
         }
     }
     routeFoods()
+    routeAccounts()
     routeMedicines()
 }

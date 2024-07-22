@@ -1,0 +1,30 @@
+package io.github.x1111101101.account.route
+
+import io.github.x1111101101.account.vo.UserRegister
+import io.github.x1111101101.account.service.UserService
+import io.ktor.server.application.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.util.*
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+
+fun Application.routeAccounts() {
+    routing {
+        route("account") {
+            routeUsers()
+        }
+    }
+}
+
+private fun Route.routeUsers() {
+    route("user") {
+        get("signup") {
+            val json = call.receiveText().decodeBase64Bytes().decodeToString()
+            val userRegister: UserRegister = Json.decodeFromString(json)
+            val respond = UserService.signup(userRegister)
+            call.respondText(Json.encodeToString(respond))
+        }
+    }
+}
