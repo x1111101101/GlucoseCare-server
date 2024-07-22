@@ -9,6 +9,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.time.Duration
 import javax.imageio.IIOImage
 import javax.imageio.ImageIO
 import javax.imageio.ImageWriteParam
@@ -27,7 +28,12 @@ class ClassificationWorker(private val scope: CoroutineScope) {
         private val COMPRESS_GOAL = 1024*1024*2
     }
 
-    private val client = OkHttpClient.Builder().build()
+    private val client = OkHttpClient.Builder()
+        .callTimeout(Duration.ofSeconds(30))
+        .readTimeout(Duration.ofSeconds(30))
+        .connectTimeout(Duration.ofSeconds(30))
+        .writeTimeout(Duration.ofSeconds(30))
+        .build()
     private val channel = Channel<ClassificationSession>(Channel.BUFFERED)
 
     fun start() = scope.launch {
@@ -49,12 +55,11 @@ class ClassificationWorker(private val scope: CoroutineScope) {
     private suspend fun work(session: ClassificationSession) {
         session.image = compressJpegImage(session.image, COMPRESS_GOAL)
         session.state = ClassificationSession.State.SEND
-
-        val json = promptAIJson("gpt-4-turbo", PROMPT, "")
-        val url = "http://${HOST_ADDRESS}/food/classification/image"
+        val imageUrl = "http://${HOST_ADDRESS}/food/classification/session/image/${session.uuid}"
+        val json = promptAIJson("gpt-4-turbo", PROMPT, imageUrl)
         val requestBody = RequestBody.create("application/json".toMediaTypeOrNull(), json)
         val request = Request.Builder()
-            .url(url)
+            .url("https://api.openai.com/v1/chat/completions")
             .headers(
                 Headers.headersOf(
                     "Content-Type", "application/json",
@@ -63,8 +68,10 @@ class ClassificationWorker(private val scope: CoroutineScope) {
             )
             .post(requestBody)
             .build()
+        println(json)
         val respond = suspendCoroutine {
             try {
+                println("Calling API")
                 client.newCall(request).enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {
                         it.resumeWithException(e)
@@ -87,6 +94,7 @@ class ClassificationWorker(private val scope: CoroutineScope) {
                 it.resumeWithException(e)
             }
         }
+        println("CALLED API")
         session.result = respond
         session.state = ClassificationSession.State.SUCCEED
     }
