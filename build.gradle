@@ -3,9 +3,10 @@ plugins {
     id "io.ktor.plugin" version "2.3.12"
     id 'org.jetbrains.kotlin.plugin.serialization' version '2.0.0'
     id 'application'
+    id 'maven-publish'
 }
 
-group = 'org.example'
+group = 'io.github.x1111101101'
 version = '1.0-SNAPSHOT'
 mainClassName = "io.github.x1111101101.Main"
 
@@ -47,4 +48,12 @@ kotlin {
 
 jar {
     from 'resources'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.kotlin
+        }
+    }
 }
