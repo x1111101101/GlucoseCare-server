@@ -11,7 +11,7 @@ import java.time.Instant
 import java.util.*
 
 private object Sessions: UUIDTable() {
-    val userId = integer("userId")
+    val userLoginId = varchar("userLoginId", 20)
     val createdTime = long("createdTime")
 }
 
@@ -24,19 +24,23 @@ private fun initSessionTable() {
 private fun ResultRow.toSession(): Session {
     return Session(
         uuid = this[Sessions.id].value,
-        userId = this[Sessions.userId],
+        userLoginId = this[Sessions.userLoginId],
         createdTime = Instant.ofEpochMilli(this[Sessions.createdTime])
     )
 }
 
 class SessionRepository {
 
-    fun createSession(userId: Int): Session? {
+    init {
+        initSessionTable()
+    }
+
+    fun createSession(userLoginId: String): Session? {
         val id = UUID.randomUUID()
         transaction {
             Sessions.insert {
                 it[Sessions.id] = id
-                it[Sessions.userId] = userId
+                it[Sessions.userLoginId] = userLoginId
                 it[Sessions.createdTime] = currentMillis()
             }
         }

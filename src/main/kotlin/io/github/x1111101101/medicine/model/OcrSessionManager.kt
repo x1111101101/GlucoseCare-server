@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 object OcrSessionManager {
@@ -31,7 +31,7 @@ object OcrSessionManager {
 
 
 }
-private val HOST_ADDRESS = PROPERTIES["HOST_ADDRESS"].toString()
+
 @Throws(Exception::class)
 fun extractTextFromImage(image: ByteArray): String {
     val img: Image = Image.newBuilder().setContent(ByteString.copyFrom(image)).build()

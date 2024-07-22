@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 private object Users : IntIdTable() {
     val name = varchar("name", 10)
-    val loginId = varchar("loginId", 10)
+    val loginId = varchar("loginId", 20)
     val loginPasswordHash = varchar("pwHash", 100)
     val phoneNumber = varchar("phoneNumber", 15)
     val extra = text("extra")
