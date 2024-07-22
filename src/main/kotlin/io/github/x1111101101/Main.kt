@@ -18,7 +18,7 @@ fun main() {
 }
 
 private fun init() {
-    Database.connect("jdbc:sqlite:local.db", driver = "org.sqlite.JDBC")
+    connectDB()
     initGoogleCloud()
 }
 
