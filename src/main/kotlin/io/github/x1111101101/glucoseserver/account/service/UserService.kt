@@ -2,7 +2,7 @@ package io.github.x1111101101.glucoseserver.account.service
 
 import io.github.x1111101101.glucoseserver.Strings
 import io.github.x1111101101.glucoseserver.account.repository.UserRepository
-import io.github.x1111101101.glucoseserver.account.vo.*
+import io.github.x1111101101.glucoseserver.account.dto.*
 import io.github.x1111101101.glucoseserver.isValidSHA256
 import io.github.x1111101101.glucoseserver.session.SessionManager
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -41,7 +41,7 @@ object UserService {
             return fail("아이디 또는 비밀번호가 일치하지 않습니다.")
         }
         val session = SessionManager.create(user.loginId)
-        val vo = UserVO(user)
+        val vo = UserDTO(user)
         return UserLoginRespond(true, "", session.uuid.toString(), vo)
     }
 

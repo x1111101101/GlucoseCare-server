@@ -1,10 +1,10 @@
-package io.github.x1111101101.glucoseserver.account.vo
+package io.github.x1111101101.glucoseserver.account.dto
 
 import io.github.x1111101101.glucoseserver.account.entity.User
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserVO(
+data class UserDTO(
     val name: String,
     val loginId: String,
     val phoneNumber: String,

@@ -1,9 +1,8 @@
 package io.github.x1111101101.glucoseserver.account.service
 
 import io.github.x1111101101.glucoseserver.Strings
-import io.github.x1111101101.glucoseserver.account.vo.UserRegister
+import io.github.x1111101101.glucoseserver.account.dto.UserRegister
 import io.github.x1111101101.glucoseserver.connectDB
-import io.github.x1111101101.glucoseserver.account.service.UserService
 import io.github.x1111101101.glucoseserver.sha256Hash
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals

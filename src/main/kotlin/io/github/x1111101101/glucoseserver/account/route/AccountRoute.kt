@@ -1,8 +1,8 @@
 package io.github.x1111101101.glucoseserver.account.route
 
-import io.github.x1111101101.glucoseserver.account.vo.UserRegister
+import io.github.x1111101101.glucoseserver.account.dto.UserRegister
 import io.github.x1111101101.glucoseserver.account.service.UserService
-import io.github.x1111101101.glucoseserver.account.vo.UserLoginRequest
+import io.github.x1111101101.glucoseserver.account.dto.UserLoginRequest
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*

@@ -1,7 +1,7 @@
 package io.github.x1111101101.glucoseserver.account.repository
 
 import io.github.x1111101101.glucoseserver.account.entity.User
-import io.github.x1111101101.glucoseserver.account.vo.UserRegister
+import io.github.x1111101101.glucoseserver.account.dto.UserRegister
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction

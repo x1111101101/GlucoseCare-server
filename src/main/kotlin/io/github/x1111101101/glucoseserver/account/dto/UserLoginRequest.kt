@@ -1,4 +1,4 @@
-package io.github.x1111101101.glucoseserver.account.vo
+package io.github.x1111101101.glucoseserver.account.dto
 
 import kotlinx.serialization.Serializable
 
