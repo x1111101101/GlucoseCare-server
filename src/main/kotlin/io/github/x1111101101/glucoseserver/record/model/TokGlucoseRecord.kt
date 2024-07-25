@@ -1,10 +1,17 @@
 package io.github.x1111101101.glucoseserver.record.model
 
 import kotlinx.serialization.Serializable
+import java.util.UUID
 
 @Serializable
-data class TokGlucoseRecord (
-    val version: Long
-) {
+data class TokGlucoseRecord(
+    override val version: Long,
+    override val uuid: String,
+    val value: Int,
+    val time: Long
+): Record {
+
+    override val type: RecordType
+        get() = RecordType.GLUCOSE
 
 }
