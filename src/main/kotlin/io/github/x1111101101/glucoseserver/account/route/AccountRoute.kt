@@ -24,7 +24,6 @@ private fun Route.routeUsers() {
         post("signup") {
             val base64 = call.receiveText()
             val json = base64.decodeBase64Bytes().decodeToString()
-            println("B64: ${base64}")
             val userRegister: UserRegister = Json.decodeFromString(json)
             val respond = UserService.signup(userRegister)
             call.respondText(Json.encodeToString(respond))

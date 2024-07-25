@@ -45,7 +45,6 @@ object UserService {
         return UserLoginRespond(true, "", session.uuid.toString(), vo)
     }
 
-
 }
 
 private object SignupSecurities {
