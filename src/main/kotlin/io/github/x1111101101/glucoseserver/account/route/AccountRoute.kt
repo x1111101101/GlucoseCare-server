@@ -22,7 +22,9 @@ fun Application.routeAccounts() {
 private fun Route.routeUsers() {
     route("user") {
         post("signup") {
-            val json = call.receiveText().decodeBase64Bytes().decodeToString()
+            val base64 = call.receiveText()
+            val json = base64.decodeBase64Bytes().decodeToString()
+            println("B64: ${base64}")
             val userRegister: UserRegister = Json.decodeFromString(json)
             val respond = UserService.signup(userRegister)
             call.respondText(Json.encodeToString(respond))
@@ -31,6 +33,7 @@ private fun Route.routeUsers() {
             val json = call.receiveText().decodeBase64Bytes().decodeToString()
             val request: UserLoginRequest = Json.decodeFromString(json)
             val respond = UserService.signin(request)
+            call.respondText(Json.encodeToString(respond))
         }
     }
 }

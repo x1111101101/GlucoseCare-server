@@ -18,7 +18,7 @@ fun connectDB() {
     Database.connect("jdbc:sqlite:local.db", driver = "org.sqlite.JDBC")
 }
 
-fun sha256Hash(input: String): String {
+internal fun sha256Hash(input: String): String {
     val digest = MessageDigest.getInstance("SHA-256")
     val hashBytes = digest.digest(input.toByteArray())
     return DatatypeConverter.printHexBinary(hashBytes).lowercase()

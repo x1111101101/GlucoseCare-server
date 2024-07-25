@@ -42,9 +42,15 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-kotlin {
-    jvmToolchain(21)
+
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "11"
+    }
 }
+
+
 
 jar {
     from 'resources'
