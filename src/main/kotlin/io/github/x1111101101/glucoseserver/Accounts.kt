@@ -11,12 +11,12 @@ import java.util.*
 suspend fun PipelineContext<Unit, ApplicationCall>.getLogin(): String? {
     val sessionId = call.request.header("sid")
     if(sessionId == null) {
-        call.respond(HttpStatusCode.Unauthorized, R.strings.loginRequired)
+        call.respond(HttpStatusCode.Unauthorized, R.strings.LOGIN_REQUIRED)
         return null
     }
     val session = SessionManager[UUID.fromString(sessionId)]
     if(session == null) {
-        call.respond(HttpStatusCode.BadRequest, R.strings.sessionExpired)
+        call.respond(HttpStatusCode.BadRequest, R.strings.SESSION_EXPIRED)
         return null
     }
     return session.userLoginId

@@ -14,16 +14,17 @@ class RecordWrapDao {
         }
     }
 
-    fun insert(r: RecordWrap) {
-        transaction {
+    fun insert(r: RecordWrap): Boolean {
+        val inserted = transaction {
             RecordWrapTable.insert {
                 it[type] = r.recordType
                 it[jsonBody] = r.recordJsonBody
                 it[id] = UUID.fromString(r.recordId)
                 it[userId] = r.userId
                 it[createdTime]
-            }
+            }.getOrNull(RecordWrapTable.id) != null
         }
+        return inserted
     }
 
     fun delete(recordId: UUID): Boolean {

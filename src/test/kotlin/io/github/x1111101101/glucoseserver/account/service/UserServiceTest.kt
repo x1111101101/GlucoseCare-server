@@ -30,7 +30,7 @@ class UserServiceTest {
             val respond = service.signup(it)
             println("invalid id: ${it.loginId}, respond: $respond")
             assertEquals(false, respond.succeed)
-            assertEquals(Strings.invalidLoginId, respond.message)
+            assertEquals(Strings.INVALID_LOGINID, respond.message)
         }
     }
 

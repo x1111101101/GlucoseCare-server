@@ -14,14 +14,14 @@ object UserService {
     fun signup(register: UserRegister): SignupRespond {
         fun fail(msg: String) = SignupRespond(false, msg)
         if(!isValidSHA256(register.loginPasswordHash)) {
-            return fail(Strings.invalidHash)
+            return fail(Strings.INVALID_HASH)
         }
         if(!register.loginId.matches(SignupSecurities.loginIdRegex)) {
-            return fail(Strings.invalidLoginId)
+            return fail(Strings.INVALID_LOGINID)
         }
         return transaction {
             if(userRepository.getUserByLoginId(register.loginId) != null) {
-                return@transaction fail(Strings.loginIdDuplicated)
+                return@transaction fail(Strings.LOGIN_ID_DUPLICATED)
             }
             val id = userRepository.addUser(register)
                 ?: return@transaction fail("서버 오류로 인해 회원가입에 실패하였습니다.")

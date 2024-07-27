@@ -20,12 +20,12 @@ class RecordRepository(
     private val dailyRecordsDao: DailyRecordsDao = DailyRecordsDao()
 ) {
 
-    fun create(record: Record, user: User) {
-
+    fun create(record: Record, userId: String): Boolean = transaction {
+        recordWrapDao.insert(RecordWrap(record, userId))
     }
 
-    fun update(record: Record, user: User) {
-        recordWrapDao.update(UUID.fromString(record.uuid), RecordWrap(record, user.loginId))
+    fun update(record: Record, userId: String) {
+        recordWrapDao.update(UUID.fromString(record.uuid), RecordWrap(record, userId))
     }
 
     fun delete(recordId: UUID): Boolean = transaction {
