@@ -3,6 +3,7 @@ package io.github.x1111101101.glucoseserver.record.service
 import io.github.x1111101101.glucoseserver.R
 import io.github.x1111101101.glucoseserver.account.entity.User
 import io.github.x1111101101.glucoseserver.account.repository.UserRepository
+import io.github.x1111101101.glucoseserver.record.database.entity.RecordWrap
 import io.github.x1111101101.glucoseserver.record.repository.RecordRepository
 import io.github.x1111101101.glucoseserver.record.dto.*
 import io.github.x1111101101.glucoseserver.record.model.Record
@@ -18,12 +19,12 @@ object RecordsService {
         val user = userRepository.getUserByLoginId(loginId)
             ?: return RecordReadRespond(false, R.strings.UNKNOWN_USER, "")
         val recordId = UUID.fromString(request.recordUUID)
-        val record = recordRepository.get(recordId)
+        val recordWrap = recordRepository.get(recordId)
             ?: return RecordReadRespond(false, R.strings.RECORD_NOT_FOUND, "")
-        if(user.loginId != record.userId) {
+        if(!isValid(user, recordWrap)) {
             return RecordReadRespond(false, R.strings.INVALID_REQUEST, "")
         }
-        return RecordReadRespond(true, "", record.recordJsonBody)
+        return RecordReadRespond(true, "", recordWrap.recordJsonBody)
     }
 
     fun createRecord(loginId: String, recordRequest: RecordRequest): RecordCreateRespond {
@@ -43,8 +44,8 @@ object RecordsService {
 
     }
 
-    private fun isValid(user: User, record: Record) {
-
+    private fun isValid(user: User, recordWrap: RecordWrap): Boolean {
+        return user.loginId == recordWrap.userId
     }
 
     private fun deserializeRecord(request: RecordRequest): Record {

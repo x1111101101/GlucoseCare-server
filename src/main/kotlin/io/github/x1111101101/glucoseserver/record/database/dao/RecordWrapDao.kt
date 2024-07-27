@@ -29,7 +29,9 @@ class RecordWrapDao {
 
     fun delete(recordId: UUID): Boolean {
         return transaction {
-            RecordWrapTable.deleteWhere { (RecordWrapTable.id eq recordId) } > 0
+            RecordWrapTable.update(where = { (RecordWrapTable.id eq recordId) }) {
+                it[deleted] = true
+            } >= 0
         }
     }
 

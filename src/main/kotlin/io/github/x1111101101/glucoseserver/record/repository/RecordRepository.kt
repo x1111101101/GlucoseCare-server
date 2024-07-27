@@ -1,16 +1,16 @@
 package io.github.x1111101101.glucoseserver.record.repository
 
-import io.github.x1111101101.glucoseserver.account.entity.User
 import io.github.x1111101101.glucoseserver.getStartOfDayMillis
 import io.github.x1111101101.glucoseserver.millisToLocalDateTime
 import io.github.x1111101101.glucoseserver.record.database.dao.DailyRecordsDao
 import io.github.x1111101101.glucoseserver.record.database.dao.RecordWrapDao
 import io.github.x1111101101.glucoseserver.record.database.entity.DailyRecords
 import io.github.x1111101101.glucoseserver.record.database.entity.RecordWrap
+import io.github.x1111101101.glucoseserver.record.model.DailyRecordItem
 import io.github.x1111101101.glucoseserver.record.model.DailyRecordList
 import io.github.x1111101101.glucoseserver.record.model.Record
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.UUID
+import java.util.*
 
 /**
  * sync DailyRecordsTable and RecordWrapTable
@@ -21,7 +21,15 @@ class RecordRepository(
 ) {
 
     fun create(record: Record, userId: String): Boolean = transaction {
+        val prev = recordWrapDao.get(UUID.fromString(record.uuid)) ?: return@transaction false
+        val daily = getOrCreateDaily(userId, millisToLocalDateTime(record.createdTime).getStartOfDayMillis())
         recordWrapDao.insert(RecordWrap(record, userId))
+        val dailyRecordItems: List<DailyRecordItem> = daily.records.items + listOf(DailyRecordItem(record.uuid, record.version))
+        if(!dailyRecordsDao.update(daily.id, DailyRecordList(dailyRecordItems))) {
+            // TODO Rollback
+            throw IllegalStateException()
+        }
+        return@transaction true
     }
 
     fun update(record: Record, userId: String) {
@@ -29,14 +37,7 @@ class RecordRepository(
     }
 
     fun delete(recordId: UUID): Boolean = transaction {
-        val previous = get(recordId) ?: return@transaction false
-        if (!recordWrapDao.delete(recordId)) {
-            return@transaction false
-        }
-        val daily = getOrCreateDaily(previous.userId, millisToLocalDateTime(previous.createdTime).getStartOfDayMillis())
-        val removed = daily.records.items.filter { it.uuid != recordId.toString() }
-        dailyRecordsDao.update(daily.id, DailyRecordList(removed))
-        return@transaction true
+        return@transaction recordWrapDao.delete(recordId)
     }
 
 

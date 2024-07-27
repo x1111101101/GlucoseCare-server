@@ -35,12 +35,12 @@ class DailyRecordsDao {
         }
     }
 
-    fun update(id: Int, list: DailyRecordList) {
-        transaction {
+    fun update(id: Int, list: DailyRecordList): Boolean {
+        return transaction {
             DailyRecordsTable.update(where = { (DailyRecordsTable.id eq id) }) {
                 it[records] = Json.encodeToString(list)
             }
-        }
+        } >= 0
     }
 
     private fun ResultRow.toDailyRecords(): DailyRecords {

@@ -23,7 +23,7 @@ object UserService {
             if(userRepository.getUserByLoginId(register.loginId) != null) {
                 return@transaction fail(Strings.LOGIN_ID_DUPLICATED)
             }
-            val id = userRepository.addUser(register)
+            userRepository.addUser(register)
                 ?: return@transaction fail("서버 오류로 인해 회원가입에 실패하였습니다.")
             return@transaction SignupRespond(true, "")
         }
