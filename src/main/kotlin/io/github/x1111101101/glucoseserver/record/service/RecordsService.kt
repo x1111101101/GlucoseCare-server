@@ -34,7 +34,7 @@ object RecordsService {
         TODO()
     }
 
-    fun deleteRecord(loginId: String, recordDelete) {
+    fun deleteRecord(loginId: String, recordId: UUID) {
 
     }
 
@@ -43,7 +43,7 @@ object RecordsService {
     }
 
     private fun deserializeRecord(request: RecordRequest): Record {
-        when(RecordType.valueOf(request.recordType)) {
+        when (RecordType.valueOf(request.recordType)) {
             RecordType.GLUCOSE -> return TODO()
             else -> throw IllegalArgumentException("unknown record type")
         }

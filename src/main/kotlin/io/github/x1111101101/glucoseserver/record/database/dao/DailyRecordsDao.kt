@@ -15,7 +15,7 @@ class DailyRecordsDao {
 
     init {
         transaction {
-            SchemaUtils.create(RecordWrapTable)
+            SchemaUtils.create(DailyRecordsTable)
         }
     }
 
@@ -29,26 +29,27 @@ class DailyRecordsDao {
         }[DailyRecordsTable.id].value
     }
 
-    fun get(recordId: UUID): RecordWrap? {
+    fun get(userId: String, startOfDay: Long): DailyRecords? {
         return transaction {
-            RecordWrapTable.select { (RecordWrapTable.id eq recordId) }
-                .map { it.toRecordWrap() }
+            DailyRecordsTable
+                .select { (DailyRecordsTable.startOfDay eq startOfDay) and (DailyRecordsTable.userId eq userId)}
+                .map { it.toDailyRecords() }
                 .firstOrNull()
         }
     }
 
-    fun update(recordId: UUID, new: RecordWrap) {
+    fun update(id: Int, list: DailyRecordList) {
         transaction {
-            RecordWrapTable.update(where = { (RecordWrapTable.id eq recordId) }) {
-                it[jsonBody] = new.recordJsonBody
+            DailyRecordsTable.update(where = { (DailyRecordsTable.id eq id) }) {
+                it[records] = Json.encodeToString(list)
             }
         }
     }
 
-    private fun ResultRow.toRecordWrap(): RecordWrap {
+    private fun ResultRow.toDailyRecords(): DailyRecords {
         val row = this
-        return RecordWrapTable.run {
-            RecordWrap(row[id].value.toString(), row[type], row[jsonBody], row[userId], row[deleted])
+        return DailyRecordsTable.run {
+            DailyRecords(row[id].value, row[userId], row[startOfDay], Json.decodeFromString(row[records]))
         }
     }
 

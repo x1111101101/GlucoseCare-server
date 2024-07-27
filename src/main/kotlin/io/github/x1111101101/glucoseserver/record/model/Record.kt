@@ -1,7 +1,9 @@
 package io.github.x1111101101.glucoseserver.record.model
 
-import kotlinx.serialization.Serializable
-import java.util.UUID
+import io.github.x1111101101.glucoseserver.fromMillis
+import io.github.x1111101101.glucoseserver.millisToLocalDateTime
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 
 interface Record {
@@ -10,4 +12,8 @@ interface Record {
     val createdTime: Long
     val deleted: Boolean
     val type: RecordType
+}
+
+fun Record.createdTimeAsLocalDateTime(): LocalDateTime {
+    return millisToLocalDateTime(this.createdTime)
 }
