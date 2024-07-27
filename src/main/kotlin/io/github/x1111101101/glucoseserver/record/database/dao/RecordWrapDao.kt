@@ -1,7 +1,7 @@
-package io.github.x1111101101.glucoseserver.record.data.dao
+package io.github.x1111101101.glucoseserver.record.database.dao
 
-import io.github.x1111101101.glucoseserver.record.data.entity.RecordWrap
-import io.github.x1111101101.glucoseserver.record.data.table.RecordWrapTable
+import io.github.x1111101101.glucoseserver.record.database.entity.RecordWrap
+import io.github.x1111101101.glucoseserver.record.database.table.RecordWrapTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*

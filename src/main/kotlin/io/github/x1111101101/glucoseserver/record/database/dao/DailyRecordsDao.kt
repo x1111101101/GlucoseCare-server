@@ -1,7 +1,7 @@
-package io.github.x1111101101.glucoseserver.record.data.dao
+package io.github.x1111101101.glucoseserver.record.database.dao
 
-import io.github.x1111101101.glucoseserver.record.data.entity.DailyRecords
-import io.github.x1111101101.glucoseserver.record.data.table.DailyRecordsTable
+import io.github.x1111101101.glucoseserver.record.database.entity.DailyRecords
+import io.github.x1111101101.glucoseserver.record.database.table.DailyRecordsTable
 import io.github.x1111101101.glucoseserver.record.model.DailyRecordList
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
