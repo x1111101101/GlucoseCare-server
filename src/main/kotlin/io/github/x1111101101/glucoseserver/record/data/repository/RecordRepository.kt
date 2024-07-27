@@ -1,16 +1,14 @@
-package io.github.x1111101101.glucoseserver.record.database.repository
+package io.github.x1111101101.glucoseserver.record.data.repository
 
 import io.github.x1111101101.glucoseserver.account.entity.User
 import io.github.x1111101101.glucoseserver.getStartOfDayMillis
 import io.github.x1111101101.glucoseserver.millisToLocalDateTime
-import io.github.x1111101101.glucoseserver.record.database.dao.DailyRecordsDao
-import io.github.x1111101101.glucoseserver.record.database.dao.RecordWrapDao
-import io.github.x1111101101.glucoseserver.record.database.entity.DailyRecords
-import io.github.x1111101101.glucoseserver.record.database.entity.RecordWrap
-import io.github.x1111101101.glucoseserver.record.database.table.RecordWrapTable
+import io.github.x1111101101.glucoseserver.record.data.dao.DailyRecordsDao
+import io.github.x1111101101.glucoseserver.record.data.dao.RecordWrapDao
+import io.github.x1111101101.glucoseserver.record.data.entity.DailyRecords
+import io.github.x1111101101.glucoseserver.record.data.entity.RecordWrap
 import io.github.x1111101101.glucoseserver.record.model.DailyRecordList
 import io.github.x1111101101.glucoseserver.record.model.Record
-import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
 

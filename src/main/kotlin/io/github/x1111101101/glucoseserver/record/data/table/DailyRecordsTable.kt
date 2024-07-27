@@ -1,4 +1,4 @@
-package io.github.x1111101101.glucoseserver.record.database.table
+package io.github.x1111101101.glucoseserver.record.data.table
 
 import org.jetbrains.exposed.dao.id.IntIdTable
 

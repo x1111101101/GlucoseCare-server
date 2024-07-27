@@ -3,8 +3,8 @@ package io.github.x1111101101.glucoseserver.record.service
 import io.github.x1111101101.glucoseserver.R
 import io.github.x1111101101.glucoseserver.account.entity.User
 import io.github.x1111101101.glucoseserver.account.repository.UserRepository
-import io.github.x1111101101.glucoseserver.record.database.entity.RecordWrap
-import io.github.x1111101101.glucoseserver.record.database.repository.RecordRepository
+import io.github.x1111101101.glucoseserver.record.data.entity.RecordWrap
+import io.github.x1111101101.glucoseserver.record.data.repository.RecordRepository
 import io.github.x1111101101.glucoseserver.record.dto.*
 import io.github.x1111101101.glucoseserver.record.model.Record
 import io.github.x1111101101.glucoseserver.record.model.RecordType
