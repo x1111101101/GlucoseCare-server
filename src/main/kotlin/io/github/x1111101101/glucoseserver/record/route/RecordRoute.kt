@@ -1,7 +1,13 @@
 package io.github.x1111101101.glucoseserver.record.route
 
+import io.github.x1111101101.glucoseserver.getLogin
+import io.github.x1111101101.glucoseserver.record.dto.RecordRequest
+import io.github.x1111101101.glucoseserver.record.service.RecordsService
 import io.ktor.server.application.*
+import io.ktor.server.request.*
 import io.ktor.server.routing.*
+import io.ktor.util.*
+import kotlinx.serialization.json.Json
 
 fun Application.routeRecords() {
     routing {
@@ -11,6 +17,12 @@ fun Application.routeRecords() {
 
 private fun Route.routeRecords() {
     route("record") {
+        post("create") {
+            val login = getLogin() ?: return@post
+            val json = call.receiveText().decodeBase64Bytes().decodeToString()
+            val recordRequest = Json.decodeFromString<RecordRequest>(json)
+            val respond = RecordsService.createRecord(login, recordRequest)
+        }
 
     }
 }

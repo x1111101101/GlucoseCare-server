@@ -1,15 +1,17 @@
 package io.github.x1111101101.glucoseserver.account.service
 
+import io.github.x1111101101.glucoseserver.Container
 import io.github.x1111101101.glucoseserver.Strings
 import io.github.x1111101101.glucoseserver.account.repository.UserRepository
 import io.github.x1111101101.glucoseserver.account.dto.*
+import io.github.x1111101101.glucoseserver.account.entity.User
 import io.github.x1111101101.glucoseserver.isValidSHA256
 import io.github.x1111101101.glucoseserver.session.SessionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object UserService {
 
-    val userRepository = UserRepository()
+    private val userRepository = Container.userRepository
 
     fun signup(register: UserRegister): SignupRespond {
         fun fail(msg: String) = SignupRespond(false, msg)

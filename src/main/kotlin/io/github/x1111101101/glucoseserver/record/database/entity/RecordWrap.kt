@@ -19,7 +19,7 @@ class RecordWrap {
     }
 
     constructor(recordId: String, recordType: String, recordJsonBody: String, userId: String) {
-        this.recordId = recordJsonBody
+        this.recordId = recordId
         this.recordType = recordType
         this.recordJsonBody = recordJsonBody
         this.userId = userId

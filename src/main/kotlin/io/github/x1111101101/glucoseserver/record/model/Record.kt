@@ -7,5 +7,7 @@ import java.util.UUID
 interface Record {
     val uuid: String
     val version: Long
+    val createdTime: Long
+    val deleted: Boolean
     val type: RecordType
 }
