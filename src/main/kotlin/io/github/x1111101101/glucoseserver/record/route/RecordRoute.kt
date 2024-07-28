@@ -19,19 +19,38 @@ fun Application.routeRecords() {
 }
 
 private fun Route.routeRecords() {
+    route("records") {
+        routeSingleRecord()
+        routeDailyRecord()
+    }
+}
+
+private fun Route.routeSingleRecord() {
     route("record") {
-        get("/") {
+        get {
             val login = getLogin() ?: return@get
             val json = call.receiveText().decodeBase64Bytes().decodeToString()
             val respond = RecordsService.getRecord(login, Json.decodeFromString(json))
             call.respondText(Json.encodeToString(respond))
         }
-        post("/") {
+        post {
             val login = getLogin() ?: return@post
             val json = call.receiveText().decodeBase64Bytes().decodeToString()
             val recordRequest = Json.decodeFromString<RecordRequest>(json)
             val respond = RecordsService.createRecord(login, recordRequest)
             call.respondText(Json.encodeToString(respond))
+        }
+    }
+}
+
+/**
+ * creation, updating of DailyRecord is only for server-side
+ */
+private fun Route.routeDailyRecord() {
+    route("daily") {
+        get {
+           val login = getLogin() ?: return@get
+
         }
     }
 }
