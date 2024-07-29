@@ -1,6 +1,6 @@
-package io.github.x1111101101.glucoseserver.medicine.service
+package io.github.x1111101101.glucoseserver.prescription.service
 
-import io.github.x1111101101.glucoseserver.medicine.model.OcrSessionManager
+import io.github.x1111101101.glucoseserver.prescription.model.ocr.OcrSessionManager
 import java.util.*
 
 
