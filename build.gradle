@@ -56,11 +56,27 @@ jar {
     from 'resources'
 }
 
+
+// Custom JAR task for specific packages
+task apiSourceJar(type: Jar) {
+    dependsOn(compileKotlin)
+    from {
+        fileTree("$buildDir/classes/kotlin/main") {
+            include 'io/github/x1111101101/glucoseserver/record/dto/**'
+            include 'io/github/x1111101101/glucoseserver/record/model/**'
+            include 'io/github/x1111101101/glucoseserver/account/dto/**'
+            include 'io/github/x1111101101/glucoseserver/account/model/**'
+        }
+    }
+    archiveClassifier.set('api')
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = "serviceserver"
             from components.kotlin
+            artifact apiSourceJar // Custom JAR 추가
         }
     }
 }

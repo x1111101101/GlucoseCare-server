@@ -3,10 +3,7 @@ package io.github.x1111101101.glucoseserver
 import io.github.x1111101101.glucoseserver.record.model.Record
 import org.jetbrains.exposed.sql.Database
 import java.security.MessageDigest
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
+import java.time.*
 import javax.xml.bind.DatatypeConverter
 
 val DEFAULT_ZONE_OFFSET: ZoneOffset = ZoneOffset.ofHours(9)
@@ -26,6 +23,10 @@ fun millisToLocalDateTime(millis: Long): LocalDateTime {
 
 fun LocalDateTime.getStartOfDayMillis(): Long {
     return this.toLocalDate().atStartOfDay().toInstant(DEFAULT_ZONE_OFFSET).toEpochMilli()
+}
+
+fun LocalDate.getStartOfDayMillis(): Long {
+    return this.atStartOfDay().toInstant(DEFAULT_ZONE_OFFSET).toEpochMilli()
 }
 
 fun isValidSHA256(hash: String): Boolean {
