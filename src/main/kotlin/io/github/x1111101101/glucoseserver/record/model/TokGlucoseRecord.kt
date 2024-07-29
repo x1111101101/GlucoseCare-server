@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class TokGlucoseRecord(
     override val version: Long,
     override val uuid: String,
-    override val createdTime: Long,
+    override val startOfDay: Long,
     override val deleted: Boolean,
     val value: Int,
     val time: Long

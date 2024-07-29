@@ -22,7 +22,7 @@ class RecordRepository(
 
     fun create(record: Record, userId: String): Boolean = transaction {
         val prev = recordWrapDao.get(UUID.fromString(record.uuid)) ?: return@transaction false
-        val daily = getOrCreateDaily(userId, millisToLocalDateTime(record.createdTime).getStartOfDayMillis())
+        val daily = getOrCreateDaily(userId, millisToLocalDateTime(record.startOfDay).getStartOfDayMillis())
         recordWrapDao.insert(RecordWrap(record, userId))
         val dailyRecordItems: List<DailyRecordItem> = daily.records.items + listOf(DailyRecordItem(record.uuid, record.version))
         if(!dailyRecordsDao.update(daily.id, DailyRecordList(dailyRecordItems))) {
