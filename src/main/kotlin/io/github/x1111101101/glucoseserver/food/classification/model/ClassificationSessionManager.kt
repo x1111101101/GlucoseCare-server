@@ -1,7 +1,6 @@
-package io.github.x1111101101.glucoseserver.food.model.classification
+package io.github.x1111101101.glucoseserver.food.classification.model
 
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap

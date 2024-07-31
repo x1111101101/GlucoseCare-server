@@ -64,6 +64,8 @@ task apiSourceJar(type: Jar) {
         fileTree("$buildDir/classes/kotlin/main") {
             include 'io/github/x1111101101/glucoseserver/record/dto/**'
             include 'io/github/x1111101101/glucoseserver/record/model/**'
+            include 'io/github/x1111101101/glucoseserver/record/model/glucose/**'
+            include 'io/github/x1111101101/glucoseserver/record/model/intake/**'
             include 'io/github/x1111101101/glucoseserver/account/dto/**'
             include 'io/github/x1111101101/glucoseserver/account/model/**'
         }

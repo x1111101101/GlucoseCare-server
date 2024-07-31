@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class RecordType {
-    GLUCOSE, EXERCISE_SESSION, PRESCRIPTION, TAKE_MEDICINE
+    GLUCOSE, EXERCISE_SESSION, TAKE_MEDICINE, INTAKE
 }

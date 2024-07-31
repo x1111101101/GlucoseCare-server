@@ -16,20 +16,20 @@ class DailyRecordsDao {
         }
     }
 
-    fun insert(userId: String, records: DailyRecordList, startOfDay: Long): Int {
+    fun insert(userId: String, records: DailyRecordList, date: Int): Int {
         return transaction {
             DailyRecordsTable.insert {
                 it[DailyRecordsTable.records] = Json.encodeToString(records)
                 it[DailyRecordsTable.userId] = userId
-                it[DailyRecordsTable.startOfDay] = startOfDay
+                it[DailyRecordsTable.date] = date
             }
         }[DailyRecordsTable.id].value
     }
 
-    fun get(userId: String, startOfDay: Long): DailyRecords? {
+    fun get(userId: String, date: Int): DailyRecords? {
         return transaction {
             DailyRecordsTable
-                .select { (DailyRecordsTable.startOfDay eq startOfDay) and (DailyRecordsTable.userId eq userId)}
+                .select { (DailyRecordsTable.date eq date) and (DailyRecordsTable.userId eq userId)}
                 .map { it.toDailyRecords() }
                 .firstOrNull()
         }
@@ -46,7 +46,7 @@ class DailyRecordsDao {
     private fun ResultRow.toDailyRecords(): DailyRecords {
         val row = this
         return DailyRecordsTable.run {
-            DailyRecords(row[id].value, row[userId], row[startOfDay], Json.decodeFromString(row[records]))
+            DailyRecords(row[id].value, row[userId], row[date], Json.decodeFromString(row[records]))
         }
     }
 

@@ -1,7 +1,7 @@
 package io.github.x1111101101.glucoseserver
 
 import io.github.x1111101101.glucoseserver.account.route.routeAccounts
-import io.github.x1111101101.glucoseserver.food.route.routeFoods
+import io.github.x1111101101.glucoseserver.food.routeFoods
 import io.github.x1111101101.glucoseserver.prescription.route.routePrescriptions
 import io.github.x1111101101.glucoseserver.record.route.routeRecords
 import io.ktor.server.application.*

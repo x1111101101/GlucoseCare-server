@@ -1,4 +1,4 @@
-package io.github.x1111101101.glucoseserver.food.model.classification
+package io.github.x1111101101.glucoseserver.food.classification.model
 
 import io.github.x1111101101.glucoseserver.PROPERTIES
 import kotlinx.coroutines.CoroutineScope

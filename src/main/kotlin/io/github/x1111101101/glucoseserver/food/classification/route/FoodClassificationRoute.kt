@@ -1,6 +1,6 @@
-package io.github.x1111101101.glucoseserver.food.route
+package io.github.x1111101101.glucoseserver.food.classification.route
 
-import io.github.x1111101101.glucoseserver.food.service.FoodClassificationService
+import io.github.x1111101101.glucoseserver.food.classification.service.FoodClassificationService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*

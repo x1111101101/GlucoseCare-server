@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TokDailyRecord (
-    val date: Long
+    val date: Int
 ) {
 
 }

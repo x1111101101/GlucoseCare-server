@@ -21,7 +21,7 @@ class RecordWrapDao {
                 it[jsonBody] = r.recordJsonBody
                 it[id] = UUID.fromString(r.recordId)
                 it[userId] = r.userId
-                it[startOfDay]
+                it[date] = r.date
             }.getOrNull(RecordWrapTable.id) != null
         }
         return inserted
@@ -54,7 +54,7 @@ class RecordWrapDao {
     private fun ResultRow.toRecordWrap(): RecordWrap {
         val row = this
         return RecordWrapTable.run {
-            RecordWrap(row[id].value.toString(), row[type], row[jsonBody], row[userId], row[startOfDay])
+            RecordWrap(row[id].value.toString(), row[type], row[jsonBody], row[userId], row[date])
         }
     }
 

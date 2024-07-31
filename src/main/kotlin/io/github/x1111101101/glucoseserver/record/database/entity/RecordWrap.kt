@@ -9,7 +9,7 @@ class RecordWrap {
     val recordId: String
     val recordType: String
     val recordJsonBody: String
-    val startOfDay: Long
+    val date: Int
     val userId: String
 
     constructor(record: Record, userId: String) {
@@ -17,15 +17,15 @@ class RecordWrap {
         this.recordId = record.uuid
         this.recordType = record.type.name
         this.recordJsonBody = Json.encodeToString(record)
-        this.startOfDay = record.startOfDay
+        this.date = record.date
     }
 
-    constructor(recordId: String, recordType: String, recordJsonBody: String, userId: String, startOfDay: Long) {
+    constructor(recordId: String, recordType: String, recordJsonBody: String, userId: String, date: Int) {
         this.recordId = recordId
         this.recordType = recordType
         this.recordJsonBody = recordJsonBody
         this.userId = userId
-        this.startOfDay = startOfDay
+        this.date = date
     }
 
 }

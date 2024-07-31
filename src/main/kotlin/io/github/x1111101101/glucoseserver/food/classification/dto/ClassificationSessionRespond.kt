@@ -1,4 +1,4 @@
-package io.github.x1111101101.glucoseserver.food.vo
+package io.github.x1111101101.glucoseserver.food.classification.dto
 
 import com.google.gson.JsonObject
 
