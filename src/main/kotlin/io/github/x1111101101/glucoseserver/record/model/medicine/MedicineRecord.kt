@@ -11,7 +11,8 @@ data class MedicineRecord(
     override val version: Long,
     override val date: Int,
     val time: Int,
-    
+    val timing: MedicineTiming,
+    val medicines: List<Pair<Medicine, MedicineVolume>>
 ): Record {
     override val type: RecordType get() = RecordType.TAKE_MEDICINE
 }
