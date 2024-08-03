@@ -4,7 +4,6 @@ import io.github.x1111101101.glucoseserver.record.model.DayTimeHolder
 import io.github.x1111101101.glucoseserver.record.model.Record
 import io.github.x1111101101.glucoseserver.record.model.RecordType
 import kotlinx.serialization.Serializable
-import java.time.LocalTime
 
 @Serializable
 data class TokGlucoseRecord(
@@ -19,8 +18,6 @@ data class TokGlucoseRecord(
 
     override val type: RecordType
         get() = RecordType.GLUCOSE
-
-
 
     companion object {
         const val TIMING_AFTER_INTAKE = "AFTER_INTAKE"

@@ -12,3 +12,5 @@ private fun loadProperties(instance: Properties) {
         it.bufferedReader().use { reader-> instance.load(reader) }
     }
 }
+
+
