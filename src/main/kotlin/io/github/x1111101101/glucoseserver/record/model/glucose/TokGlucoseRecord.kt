@@ -3,6 +3,7 @@ package io.github.x1111101101.glucoseserver.record.model.glucose
 import io.github.x1111101101.glucoseserver.record.model.DayTimeHolder
 import io.github.x1111101101.glucoseserver.record.model.Record
 import io.github.x1111101101.glucoseserver.record.model.RecordType
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -16,6 +17,7 @@ data class TokGlucoseRecord(
     val timing: String
 ): Record, DayTimeHolder {
 
+    @SerialName("recordType")
     override val type: RecordType
         get() = RecordType.GLUCOSE
 

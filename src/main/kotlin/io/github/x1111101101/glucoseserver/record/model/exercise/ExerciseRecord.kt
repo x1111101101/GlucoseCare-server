@@ -1,20 +1,19 @@
-package io.github.x1111101101.glucoseserver.record.model.medicine
+package io.github.x1111101101.glucoseserver.record.model.exercise
 
 import io.github.x1111101101.glucoseserver.record.model.Record
 import io.github.x1111101101.glucoseserver.record.model.RecordType
-import kotlinx.serialization.SerialName
+import io.github.x1111101101.glucoseserver.record.model.exercise.extra.ExerciseExtraData
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MedicineRecord(
+data class ExerciseRecord(
     override val deleted: Boolean,
     override val uuid: String,
     override val version: Long,
     override val date: Int,
     val time: Int,
-    val timing: MedicineTiming,
-    val medicines: List<Pair<Medicine, MedicineVolume>>
+    val durationInSeconds: Int,
+    val extraData: ExerciseExtraData
 ): Record {
-    @SerialName("recordType")
-    override val type: RecordType get() = RecordType.TAKE_MEDICINE
+    override val type: RecordType get() = RecordType.EXERCISE_SESSION
 }
