@@ -13,7 +13,8 @@ data class ExerciseRecord(
     override val date: Int,
     val time: Int,
     val durationInSeconds: Int,
-    val extraData: ExerciseExtraData
+    val extraData: ExerciseExtraData,
+    val tags: List<String>
 ): Record {
     override val type: RecordType get() = RecordType.EXERCISE_SESSION
 }
