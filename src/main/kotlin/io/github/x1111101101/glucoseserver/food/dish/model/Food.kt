@@ -1,4 +1,4 @@
-package io.github.x1111101101.glucoseserver.food.dish
+package io.github.x1111101101.glucoseserver.food.dish.model
 
 import io.github.x1111101101.glucoseserver.food.dish.model.nutrition.Nutrition
 
