@@ -1,4 +1,4 @@
-package io.github.x1111101101.glucoseserver.food.dish.model
+package io.github.x1111101101.glucoseserver.food.dish.model.nutrition
 
 import kotlinx.serialization.Serializable
 
@@ -10,6 +10,7 @@ data class Nutrition(
     val protein: Double,
     val salt: Double,
     val fat: Double,
+    val dietaryFiber: Double,
 ) {
 
     fun multiply(ratio: Double): Nutrition {
@@ -20,6 +21,7 @@ data class Nutrition(
             salt = salt * ratio,
             fat = fat * ratio,
             water = water * ratio,
+            dietaryFiber = dietaryFiber * ratio
         )
     }
 

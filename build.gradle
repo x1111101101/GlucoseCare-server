@@ -68,6 +68,7 @@ task apiSourceJar(type: Jar) {
             include 'io/github/x1111101101/glucoseserver/record/model/intake/**'
             include 'io/github/x1111101101/glucoseserver/account/dto/**'
             include 'io/github/x1111101101/glucoseserver/account/model/**'
+            include 'io/github/x1111101101/glucoseserver/food/dish/model/**'
         }
     }
     archiveClassifier.set('api')
