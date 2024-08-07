@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Nutrition(
     val calories: Double,
+    val water: Double,
     val carbohydrate: Double,
     val protein: Double,
     val salt: Double,
@@ -17,7 +18,8 @@ data class Nutrition(
             carbohydrate = carbohydrate * ratio,
             protein = protein * ratio,
             salt = salt * ratio,
-            fat = fat * ratio
+            fat = fat * ratio,
+            water = water * ratio,
         )
     }
 

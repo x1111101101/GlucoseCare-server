@@ -7,5 +7,10 @@ data class Dish(
     val uuid: String,
     val name: String,
     override val gramsPerServing: Double,
-    val nutrition: Nutrition
+    /**
+     * per 100 grams
+     */
+    val nutrition: Nutrition,
+    val aliases: List<String>,
+    val tags: List<String>
 ): PerServingHolder

@@ -15,28 +15,28 @@ object RecordsService {
     val userRepository: UserRepository = UserRepository()
     val recordRepository = RecordRepository()
 
-    fun getRecord(loginId: String, request: RecordIdRequest): RecordReadRespond {
+    fun getRecord(loginId: String, request: RecordIdRequest): RecordReadResponse {
         val user = userRepository.getUserByLoginId(loginId)
-            ?: return RecordReadRespond(false, R.strings.UNKNOWN_USER, "")
+            ?: return RecordReadResponse(false, R.strings.UNKNOWN_USER, "")
         val recordId = UUID.fromString(request.recordUUID)
         val recordWrap = recordRepository.get(recordId)
-            ?: return RecordReadRespond(false, R.strings.RECORD_NOT_FOUND, "")
+            ?: return RecordReadResponse(false, R.strings.RECORD_NOT_FOUND, "")
         if(!isValid(user, recordWrap)) {
-            return RecordReadRespond(false, R.strings.INVALID_REQUEST, "")
+            return RecordReadResponse(false, R.strings.INVALID_REQUEST, "")
         }
-        return RecordReadRespond(true, "", recordWrap.recordJsonBody)
+        return RecordReadResponse(true, "", recordWrap.recordJsonBody)
     }
 
-    fun createRecord(loginId: String, recordRequest: RecordRequest): RecordCreateRespond {
+    fun createRecord(loginId: String, recordRequest: RecordRequest): RecordCreateResponse {
         val user = userRepository.getUserByLoginId(loginId)
-            ?: return RecordCreateRespond(false, R.strings.UNKNOWN_USER)
+            ?: return RecordCreateResponse(false, R.strings.UNKNOWN_USER)
         val record = deserializeRecord(recordRequest)
 
         val succeed = recordRepository.create(record, user.loginId)
-        return RecordCreateRespond(succeed, "")
+        return RecordCreateResponse(succeed, "")
     }
 
-    fun updateRecord(loginId: String, recordRequest: RecordRequest): RecordUpdateRespond {
+    fun updateRecord(loginId: String, recordRequest: RecordRequest): RecordUpdateResponse {
         TODO()
     }
 
