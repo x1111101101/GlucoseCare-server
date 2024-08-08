@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RunningExtraData(
-    override val burnedCalories: Int,
+    override val burnedCalories: Double,
     override val distanceInMeters: Int,
 ) : ExerciseExtraData(ExerciseType.RUNNING), DistanceDataHolder, BurnedCaloriesDataHolder {
 
