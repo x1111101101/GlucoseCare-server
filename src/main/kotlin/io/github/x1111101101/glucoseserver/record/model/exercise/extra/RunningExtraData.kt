@@ -11,7 +11,10 @@ import kotlinx.serialization.Serializable
 data class RunningExtraData(
     override val burnedCalories: Double,
     override val distanceInMeters: Int,
-) : ExerciseExtraData(ExerciseType.RUNNING), DistanceDataHolder<RunningExtraData>, BurnedCaloriesDataHolder<RunningExtraData> {
+) : ExerciseExtraData, DistanceDataHolder<RunningExtraData>, BurnedCaloriesDataHolder<RunningExtraData> {
+
+    override val exerciseType: ExerciseType
+        get() = ExerciseType.RUNNING
 
     override fun copyWithDistance(distanceInMeters: Int): RunningExtraData {
         return copy(distanceInMeters = distanceInMeters)

@@ -9,7 +9,10 @@ import kotlinx.serialization.Serializable
 data class WalkingExtraData(
     override val stepCount: Int,
     override val burnedCalories: Double = stepCount * 0.03,
-) : ExerciseExtraData(ExerciseType.WALKING), BurnedCaloriesDataHolder<WalkingExtraData>, StepsDataHolder<WalkingExtraData> {
+) : ExerciseExtraData, BurnedCaloriesDataHolder<WalkingExtraData>, StepsDataHolder<WalkingExtraData> {
+
+    override val exerciseType: ExerciseType
+        get() = ExerciseType.WALKING
 
     override fun copyWithBurnedCalories(burnedCalories: Double): WalkingExtraData {
         return copy(burnedCalories = burnedCalories)
