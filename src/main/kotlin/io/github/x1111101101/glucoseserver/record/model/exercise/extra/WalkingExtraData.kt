@@ -1,6 +1,7 @@
 package io.github.x1111101101.glucoseserver.record.model.exercise.extra
 
 import io.github.x1111101101.glucoseserver.record.model.exercise.ExerciseType
+import io.github.x1111101101.glucoseserver.record.model.exercise.extra.dataholder.AutoCollectedDataHolder
 import io.github.x1111101101.glucoseserver.record.model.exercise.extra.dataholder.BurnedCaloriesDataHolder
 import io.github.x1111101101.glucoseserver.record.model.exercise.extra.dataholder.StepsDataHolder
 import kotlinx.serialization.Serializable
@@ -9,7 +10,10 @@ import kotlinx.serialization.Serializable
 data class WalkingExtraData(
     override val stepCount: Int,
     override val burnedCalories: Double = stepCount * 0.03,
-) : ExerciseExtraData, BurnedCaloriesDataHolder<WalkingExtraData>, StepsDataHolder<WalkingExtraData> {
+    override val isAutoCollected: Boolean
+) : ExerciseExtraData, BurnedCaloriesDataHolder<WalkingExtraData>, StepsDataHolder<WalkingExtraData>, AutoCollectedDataHolder {
+
+    val stepSources = HashMap<String, Int>()
 
     override val exerciseType: ExerciseType
         get() = ExerciseType.WALKING
