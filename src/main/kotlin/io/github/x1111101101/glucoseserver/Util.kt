@@ -1,12 +1,18 @@
 package io.github.x1111101101.glucoseserver
 
 import io.github.x1111101101.glucoseserver.record.model.Record
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.asCoroutineDispatcher
 import org.jetbrains.exposed.sql.Database
 import java.security.MessageDigest
 import java.time.*
+import java.util.UUID
+import java.util.concurrent.Executors
 import javax.xml.bind.DatatypeConverter
 
 val DEFAULT_ZONE_OFFSET: ZoneOffset = ZoneOffset.ofHours(9)
+
+val TEMP_SCOPE = CoroutineScope(Executors.newFixedThreadPool(4).asCoroutineDispatcher())
 
 fun currentMillis(): Long {
     return Instant.now().toEpochMilli()
@@ -36,6 +42,10 @@ fun isValidSHA256(hash: String): Boolean {
 
 fun connectDB() {
     Database.connect("jdbc:sqlite:local.db", driver = "org.sqlite.JDBC")
+}
+
+fun connectTestDB() {
+    Database.connect("jdbc:sqlite:localtest.db", driver = "org.sqlite.JDBC")
 }
 
 internal fun sha256Hash(input: String): String {

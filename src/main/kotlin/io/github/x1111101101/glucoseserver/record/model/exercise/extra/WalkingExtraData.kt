@@ -10,10 +10,9 @@ import kotlinx.serialization.Serializable
 data class WalkingExtraData(
     override val stepCount: Int,
     override val burnedCalories: Double = stepCount * 0.03,
-    override val isAutoCollected: Boolean
+    override val isAutoCollected: Boolean,
+    val metadata: Map<String, String>
 ) : ExerciseExtraData, BurnedCaloriesDataHolder<WalkingExtraData>, StepsDataHolder<WalkingExtraData>, AutoCollectedDataHolder {
-
-    val stepSources = HashMap<String, Int>()
 
     override val exerciseType: ExerciseType
         get() = ExerciseType.WALKING

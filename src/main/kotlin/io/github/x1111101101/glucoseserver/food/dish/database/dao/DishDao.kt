@@ -32,7 +32,7 @@ class DishDao {
 
     fun create(entity: DishEntity) {
         transaction {
-            DishTable.insert {
+            DishTable.insertIgnore {
                 it[id] = entity.uuid
                 it[dishJson] = entity.dishJson
             }
