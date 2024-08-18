@@ -8,7 +8,12 @@ import io.ktor.server.response.*
 import io.ktor.util.pipeline.*
 import java.util.*
 
+/**
+ * get session id from request header 'sid' and check is valid
+ * @return null - missing or wrong session id header
+ */
 suspend fun PipelineContext<Unit, ApplicationCall>.getLogin(): String? {
+    if(IS_LOGIN_PASSED) return ""
     val sessionId = call.request.header("sid")
     if(sessionId == null) {
         call.respond(HttpStatusCode.Unauthorized, R.strings.LOGIN_REQUIRED)

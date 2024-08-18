@@ -14,3 +14,4 @@ private fun loadProperties(instance: Properties) {
 }
 
 
+val IS_LOGIN_PASSED = true

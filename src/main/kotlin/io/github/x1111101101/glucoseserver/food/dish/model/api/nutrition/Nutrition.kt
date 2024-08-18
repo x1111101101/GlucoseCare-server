@@ -1,7 +1,6 @@
-package io.github.x1111101101.glucoseserver.food.dish.model.nutrition
+package io.github.x1111101101.glucoseserver.food.dish.model.api.nutrition
 
 import kotlinx.serialization.Serializable
-import javax.sound.sampled.Port
 
 @Serializable
 data class Nutrition(

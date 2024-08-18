@@ -48,6 +48,10 @@ fun connectTestDB() {
     Database.connect("jdbc:sqlite:localtest.db", driver = "org.sqlite.JDBC")
 }
 
+internal fun d(s: String) {
+    println("DEBUG: $s")
+}
+
 internal fun sha256Hash(input: String): String {
     val digest = MessageDigest.getInstance("SHA-256")
     val hashBytes = digest.digest(input.toByteArray())

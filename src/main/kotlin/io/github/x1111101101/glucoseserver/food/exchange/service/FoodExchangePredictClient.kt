@@ -1,11 +1,10 @@
-package io.github.x1111101101.glucoseserver.food.exchange
+package io.github.x1111101101.glucoseserver.food.exchange.service
 
 import io.github.x1111101101.glucoseserver.PROPERTIES
-import io.github.x1111101101.glucoseserver.food.dish.model.ingredient.Ingredient
+import io.github.x1111101101.glucoseserver.food.dish.model.api.ingredient.Ingredient
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Retrofit
@@ -24,7 +23,8 @@ object FoodExchangePredictClient {
         val nutrition = ingredient.nutrition
         val request = nutrition.run { ApiRequest(
             carbohydrate, fat, protein, water, 100.0
-        )}
+        )
+        }
         val response = retrofitService.predict(Json.encodeToString(request).toRequestBody("application/json".toMediaType()))
         println(response)
     }

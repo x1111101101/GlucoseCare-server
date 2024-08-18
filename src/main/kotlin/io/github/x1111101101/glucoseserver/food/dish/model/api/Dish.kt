@@ -1,6 +1,6 @@
-package io.github.x1111101101.glucoseserver.food.dish.model
+package io.github.x1111101101.glucoseserver.food.dish.model.api
 
-import io.github.x1111101101.glucoseserver.food.dish.model.nutrition.Nutrition
+import io.github.x1111101101.glucoseserver.food.dish.model.api.nutrition.Nutrition
 import kotlinx.serialization.Serializable
 import java.util.UUID
 

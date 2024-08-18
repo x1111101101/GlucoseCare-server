@@ -2,7 +2,6 @@ package io.github.x1111101101.glucoseserver.food.dish.database.dao
 
 import io.github.x1111101101.glucoseserver.food.dish.database.entity.DishEntity
 import io.github.x1111101101.glucoseserver.food.dish.database.table.DishTable
-import io.github.x1111101101.glucoseserver.food.dish.model.Dish
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*

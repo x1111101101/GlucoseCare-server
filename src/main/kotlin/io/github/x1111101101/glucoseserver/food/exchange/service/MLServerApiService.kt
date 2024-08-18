@@ -1,4 +1,4 @@
-package io.github.x1111101101.glucoseserver.food.exchange
+package io.github.x1111101101.glucoseserver.food.exchange.service
 
 import okhttp3.RequestBody
 import retrofit2.http.Body

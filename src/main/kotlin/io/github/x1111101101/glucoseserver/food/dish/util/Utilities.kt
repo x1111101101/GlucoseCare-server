@@ -1,6 +1,6 @@
-package io.github.x1111101101.glucoseserver.food.dish.model
+package io.github.x1111101101.glucoseserver.food.dish.util
 
-import io.github.x1111101101.glucoseserver.food.dish.model.nutrition.Nutrition
+import io.github.x1111101101.glucoseserver.food.dish.model.api.nutrition.Nutrition
 
 fun Nutrition.allWeight(): Double {
     return listOf(

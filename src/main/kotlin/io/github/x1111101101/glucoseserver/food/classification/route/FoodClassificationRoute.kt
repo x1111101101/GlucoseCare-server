@@ -9,7 +9,7 @@ import io.ktor.server.routing.*
 import io.ktor.util.*
 import java.util.*
 
-fun Route.foodClassificationRoute() {
+fun Route.routeClassifications() {
     route("classification") {
         sessionRoute()
     }
