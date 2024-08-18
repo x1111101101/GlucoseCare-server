@@ -10,6 +10,7 @@ data class IntakeRecord(
     override val deleted: Boolean = false,
     override val uuid: String,
     override val version: Long,
+    val intakeType: IntakeType,
     val items: List<IntakeItem>
 
 ): Record {

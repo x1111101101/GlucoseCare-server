@@ -11,8 +11,8 @@ object UserService {
 
     private val userRepository = Container.userRepository
 
-    fun signup(register: UserRegister): SignupRespond {
-        fun fail(msg: String) = SignupRespond(false, msg)
+    fun signup(register: UserRegister): SignupResponse {
+        fun fail(msg: String) = SignupResponse(false, msg)
         if(!isValidSHA256(register.loginPasswordHash)) {
             return fail(Strings.INVALID_HASH)
         }
@@ -25,13 +25,13 @@ object UserService {
             }
             userRepository.addUser(register)
                 ?: return@transaction fail("서버 오류로 인해 회원가입에 실패하였습니다.")
-            return@transaction SignupRespond(true, "")
+            return@transaction SignupResponse(true, "")
         }
     }
 
-    fun signin(request: UserLoginRequest): UserLoginRespond {
-        fun fail(msg: String): UserLoginRespond {
-            return UserLoginRespond(false, msg, null, null)
+    fun signin(request: UserLoginRequest): UserLoginResponse {
+        fun fail(msg: String): UserLoginResponse {
+            return UserLoginResponse(false, msg, null, null)
         }
 
         val user = transaction {
@@ -42,7 +42,7 @@ object UserService {
         }
         val session = SessionManager.create(user.loginId)
         val vo = UserDTO(user)
-        return UserLoginRespond(true, "", session.uuid.toString(), vo)
+        return UserLoginResponse(true, "", session.uuid.toString(), vo)
     }
 
 }

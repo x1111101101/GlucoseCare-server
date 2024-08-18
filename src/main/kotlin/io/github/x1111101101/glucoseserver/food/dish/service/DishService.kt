@@ -39,6 +39,10 @@ object DishService {
         )
     }
 
+    suspend fun findFood(id: UUID): String? {
+        return repository.get(id)?.dishJson
+    }
+
     suspend fun initFoods() {
         if (repository.getAll().isNotEmpty()) {
             return
