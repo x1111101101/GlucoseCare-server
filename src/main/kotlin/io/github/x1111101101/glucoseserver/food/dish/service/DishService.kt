@@ -7,6 +7,7 @@ import io.github.x1111101101.glucoseserver.food.dish.database.dao.DishDao
 import io.github.x1111101101.glucoseserver.food.dish.database.entity.DishEntity
 import io.github.x1111101101.glucoseserver.food.dish.dto.FoodSearchCompleteResponse
 import io.github.x1111101101.glucoseserver.food.dish.dto.FoodSearchCompletionItem
+import io.github.x1111101101.glucoseserver.food.dish.model.api.Dish
 import io.github.x1111101101.glucoseserver.food.dish.model.api.Food
 import io.github.x1111101101.glucoseserver.food.dish.model.api.ingredient.Ingredient
 import io.github.x1111101101.glucoseserver.food.dish.repository.DishRepository
@@ -75,7 +76,7 @@ object DishService {
     }
 
     private suspend fun initSearch() {
-        getAllFoods().forEach {
+        getAllFoods().filterIsInstance<Dish>().forEach {
             searchHelper.add(UUID.fromString(it.uuid), it.name)
         }
     }

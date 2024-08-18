@@ -15,6 +15,7 @@ import java.util.UUID
 internal fun Route.routeDishes() {
     route("dish") {
         routeSearch()
+
         get("/{id}") {
             val login = getLogin()
             if(login == null) {

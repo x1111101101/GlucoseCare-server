@@ -3,6 +3,7 @@ package io.github.x1111101101.glucoseserver.food.dish.util
 import io.github.x1111101101.glucoseserver.d
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.math.min
 
 class SimpleNameSearchHelper {
 
@@ -12,7 +13,7 @@ class SimpleNameSearchHelper {
         val item = SearchHelperItem(uuid, name)
         ngram(clearString(name)) { len, s ->
             val map = words.computeIfAbsent(s) { HashMap() }
-            val weight = len * len * len
+            val weight = (len * len).let { it * it }
             map.compute(item) { _, prev -> prev?.plus(weight) ?: weight }
         }
     }
@@ -27,6 +28,7 @@ class SimpleNameSearchHelper {
     fun recommend(query: String): List<SearchHelperItem> {
         val scores = HashMap<SearchHelperItem, Int>()
         ngram(clearString(query)) { _, s ->
+            println("${s}")
             val matched = words[s] ?: return@ngram
             matched.forEach { (item, weight) ->
                 scores[item] = (scores[item] ?: 0) + weight
@@ -34,9 +36,10 @@ class SimpleNameSearchHelper {
         }
         val filtered = if(scores.size > 20) {
             val weightAvg = scores.values.sum() / scores.size.toDouble()
-            scores.filterValues { it >= weightAvg }
+            scores.filterValues { it >= weightAvg*0.8 }
         } else scores
         val sorted = filtered.toList().sortedByDescending { it.second }
+        println()
         println(sorted.toList().joinToString("\n"))
         return sorted.map { it.first }
     }
@@ -54,7 +57,7 @@ private fun ngram(s: String, action: (length: Int, String)->Unit) {
         var start = 0
         while(start+len <= s.length) {
             val sub = s.substring(start, start+len)
-            start += len
+            start++
             action(len, sub)
         }
     }
