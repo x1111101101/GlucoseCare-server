@@ -18,7 +18,7 @@ data class IntakeRecord(
 }
 
 @Serializable
-data class IntakeItem(val foodUUID: String, val unit: IntakeUnit, val amount: Double)
+data class IntakeItem(val foodUUID: String, val unit: IntakeUnit, val grams: Double)
 
 enum class IntakeUnit {
     SERVING, GRAM
