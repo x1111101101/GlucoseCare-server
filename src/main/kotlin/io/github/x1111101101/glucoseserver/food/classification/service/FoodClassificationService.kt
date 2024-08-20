@@ -13,7 +13,7 @@ object FoodClassificationService {
     fun getSessionState(sessionId: UUID): ClassificationSessionResponse {
         val session = ClassificationSessionManager.getSession(sessionId)
         return session?.run {
-            ClassificationSessionResponse(uuid.toString(), state, result)
+            ClassificationSessionResponse(uuid.toString(), state.dtoEnum, result)
         } ?: throw IllegalStateException()
     }
 
