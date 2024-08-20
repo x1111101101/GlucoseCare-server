@@ -16,5 +16,5 @@ data class FoodClassificationResult(val predictions: List<FoodPrediction>)
 data class FoodPrediction(val openAiName: String, val foodUUID: String, val foodName: String)
 
 enum class FoodClassificationSessionState {
-    READY, SEND, SUCCEED, ERROR
+    READY, SEND, SUCCEED, SUCCEED_VALID, ERROR
 }

@@ -15,6 +15,7 @@ class ClassificationSession(var image: ByteArray) {
         READY(FoodClassificationSessionState.READY),
         SEND(FoodClassificationSessionState.SEND),
         SUCCEED(FoodClassificationSessionState.SUCCEED),
+        SUCCEED_VALID(FoodClassificationSessionState.SUCCEED_VALID),
         ERROR(FoodClassificationSessionState.ERROR)
     }
 }

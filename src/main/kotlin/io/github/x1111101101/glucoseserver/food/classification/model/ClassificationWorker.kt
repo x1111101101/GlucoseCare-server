@@ -4,6 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import io.github.x1111101101.glucoseserver.PROPERTIES
+import io.github.x1111101101.glucoseserver.food.classification.dto.FoodClassificationResult
 import io.github.x1111101101.glucoseserver.food.dish.service.DishService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -13,7 +14,9 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.text.MessageFormat
 import java.time.Duration
+import java.util.concurrent.TimeUnit
 import javax.imageio.IIOImage
 import javax.imageio.ImageIO
 import javax.imageio.ImageWriteParam
@@ -21,15 +24,17 @@ import javax.imageio.ImageWriter
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
+import kotlin.math.min
 
 private val OPENAI_TOKEN = PROPERTIES["OPENAI_TOKEN"].toString()
 private val HOST_ADDRESS = PROPERTIES["HOST_ADDRESS"].toString()
 private val PROMPT = PROPERTIES["CLASSIFICATION_PROMPT"].toString()
+private val VALIDATION_PROMPT = MessageFormat(PROPERTIES["CLASSIFICATION_VALIDATION_PROMPT"].toString())
 
 class ClassificationWorker(private val scope: CoroutineScope) {
 
     companion object {
-        private val COMPRESS_GOAL = 1024*1024*2
+        private val COMPRESS_GOAL = 1024 * 1024 * 2
     }
 
     private val client = OkHttpClient.Builder()
@@ -37,11 +42,12 @@ class ClassificationWorker(private val scope: CoroutineScope) {
         .readTimeout(Duration.ofSeconds(30))
         .connectTimeout(Duration.ofSeconds(30))
         .writeTimeout(Duration.ofSeconds(30))
+        .connectionPool(ConnectionPool(5, 3L, TimeUnit.HOURS))
         .build()
     private val channel = Channel<ClassificationSession>(Channel.BUFFERED)
 
     fun start() = scope.launch {
-        while(true) {
+        while (true) {
             val session = channel.receive()
             try {
                 work(session)
@@ -56,11 +62,72 @@ class ClassificationWorker(private val scope: CoroutineScope) {
         channel.send(session)
     }
 
+
     private suspend fun work(session: ClassificationSession) {
         session.image = compressJpegImage(session.image, COMPRESS_GOAL)
         session.state = ClassificationSession.State.SEND
         val imageUrl = "http://$HOST_ADDRESS/food/classification/session/image/${session.uuid}"
-        val apiJson = promptAIJson("gpt-4-turbo", PROMPT, imageUrl)
+        val apiJson = promptJsonWithImage("gpt-4-turbo", PROMPT, imageUrl)
+        val message = doPrompt(apiJson)
+        println("CALLED API")
+        try {
+            // Query
+            val root = JsonParser.parseString(message).asJsonArray
+            val predictions = root.asList().map { it.asJsonArray }.map { outer ->
+                outer.asList().map { it.asJsonPrimitive.asString }
+            }
+            val matchedPredictions = DishService.matchPredictions(predictions)
+            session.result = matchedPredictions
+            session.state = ClassificationSession.State.SUCCEED
+
+            // Validation
+            println("START VALIDATION")
+            val namesFromOpenAi = matchedPredictions.map {
+                it.predictions.map { it.openAiName }
+            }
+            val namesInDb = matchedPredictions.map {
+                it.predictions.map { it.foodName }
+            }
+            val namesFromOpenAiJson = JsonArray().also { arr ->
+                namesFromOpenAi.forEach { li ->
+                    val innerArr = JsonArray()
+                    arr.add(innerArr)
+                    li.forEach { innerArr.add(it) }
+                }
+            }.toString()
+            val namesInDbJson = JsonArray().also { arr ->
+                namesInDb.forEach { li ->
+                    val innerArr = JsonArray()
+                    arr.add(innerArr)
+                    li.forEach { innerArr.add(it) }
+                }
+            }.toString()
+            val validationMessage = doPrompt(
+                promptJson(
+                    "gpt-4-turbo",
+                    VALIDATION_PROMPT.format(arrayOf(namesFromOpenAiJson, namesInDbJson))
+                )
+            )
+            println("validationMessage: ${validationMessage}")
+            val validationArray = JsonParser.parseString(validationMessage).asJsonArray
+                .map { it.asJsonArray.map { it.asJsonPrimitive.asString }.toHashSet() }
+            val validPredictions = matchedPredictions.toMutableList()
+            repeat(min(validPredictions.size, validationArray.size)) { idx ->
+                validPredictions[idx] = FoodClassificationResult(validPredictions[idx].predictions.filter {
+                    !validationArray[idx].contains(it.foodName)
+                })
+            }
+            session.state = ClassificationSession.State.SUCCEED_VALID
+            session.result = validPredictions
+        } catch (e: Exception) {
+            e.printStackTrace()
+            if (session.state != ClassificationSession.State.SUCCEED)
+                session.state = ClassificationSession.State.ERROR
+            return
+        }
+    }
+
+    private suspend fun doPrompt(apiJson: String): String {
         val requestBody = RequestBody.create("application/json".toMediaTypeOrNull(), apiJson)
         val request = Request.Builder()
             .url("https://api.openai.com/v1/chat/completions")
@@ -80,10 +147,11 @@ class ClassificationWorker(private val scope: CoroutineScope) {
                     override fun onFailure(call: Call, e: IOException) {
                         it.resumeWithException(e)
                     }
+
                     override fun onResponse(call: Call, response: Response) {
                         val body = response.body?.string()
                         println("OPEN AI: $body")
-                        if(body == null) {
+                        if (body == null) {
                             it.resumeWithException(IllegalStateException())
                             return
                         }
@@ -99,26 +167,17 @@ class ClassificationWorker(private val scope: CoroutineScope) {
             }
         }
         println("CALLED API")
-        try {
-            val json = JsonParser.parseString(openAiResponse) as JsonObject
-            val choices = json.get("choices") as JsonArray
-            val message = choices.first().asJsonObject
-                .getAsJsonObject("message")
-                .getAsJsonPrimitive("content").asString
-            val root = JsonParser.parseString(message).asJsonArray
-            val predictions = root.asList().map { it.asJsonArray }.map { outer->
-                outer.asList().map { it.asJsonPrimitive.asString }
-            }
-            session.result = DishService.matchPredictions(predictions)
-            session.state = ClassificationSession.State.SUCCEED
-        } catch (e: Exception) {
-            session.state = ClassificationSession.State.ERROR
-        }
-
+        val json = JsonParser.parseString(openAiResponse) as JsonObject
+        val choices = json.get("choices") as JsonArray
+        val message = choices.first().asJsonObject
+            .getAsJsonObject("message")
+            .getAsJsonPrimitive("content").asString
+        return message
     }
 }
 
-private fun promptAIJson(model: String, prompt: String, imageUrl: String): String {
+
+private fun promptJsonWithImage(model: String, prompt: String, imageUrl: String): String {
     return """
         {
         "model": "$model",
@@ -140,9 +199,27 @@ private fun promptAIJson(model: String, prompt: String, imageUrl: String): Strin
           ]
         }
       ],
-      "max_tokens": 300
+      "max_tokens": 1300
        }
     """.trimIndent()
+}
+
+private fun promptJson(model: String, prompt: String): String {
+    val root = JsonObject()
+    root.addProperty("model", model)
+    root.addProperty("max_tokens", 1300)
+    root.add("messages", JsonArray().apply {
+        add(JsonObject().apply {
+            addProperty("role", "user")
+            add("content", JsonArray().apply {
+                add(JsonObject().apply {
+                    addProperty("type", "text")
+                    addProperty("text", prompt)
+                })
+            })
+        })
+    })
+    return root.toString()
 }
 
 private fun compressJpegImage(inputFile: ByteArray, maxFileSizeInBytes: Int): ByteArray {
@@ -153,7 +230,7 @@ private fun compressJpegImage(inputFile: ByteArray, maxFileSizeInBytes: Int): By
     do {
         bas = ByteArrayOutputStream()
         bas.use {
-            ImageIO.createImageOutputStream(bas).use { ios->
+            ImageIO.createImageOutputStream(bas).use { ios ->
                 val writer: ImageWriter = ImageIO.getImageWritersByFormatName("jpg").next()
                 writer.output = ios
                 val param: ImageWriteParam = writer.defaultWriteParam.also {
@@ -164,7 +241,8 @@ private fun compressJpegImage(inputFile: ByteArray, maxFileSizeInBytes: Int): By
                 writer.dispose()
                 fileSize = bas.size()
                 compressionQuality -= 0.05f
-            }}
+            }
+        }
     } while (fileSize > maxFileSizeInBytes && compressionQuality > 0.0f)
     return bas.toByteArray()
 }

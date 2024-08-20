@@ -60,7 +60,6 @@ jar {
 }
 
 
-// Custom JAR task for specific packages
 task apiSourceJar(type: Jar) {
     dependsOn(compileKotlin)
     from {
