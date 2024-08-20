@@ -1,6 +1,5 @@
 package io.github.x1111101101.glucoseserver.food.classification.dto
 
-import io.github.x1111101101.glucoseserver.food.classification.model.ClassificationSession
 import kotlinx.serialization.Serializable
 
 @Serializable
