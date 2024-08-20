@@ -4,7 +4,6 @@ import io.github.x1111101101.glucoseserver.food.classification.dto.FoodClassific
 import io.github.x1111101101.glucoseserver.food.classification.dto.FoodClassificationSessionState
 import java.time.LocalDateTime
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ClassificationSession(var image: ByteArray) {
     val uuid = UUID.randomUUID()
