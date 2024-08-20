@@ -1,7 +1,6 @@
 package io.github.x1111101101.glucoseserver.food.classification.service
 
 import io.github.x1111101101.glucoseserver.food.classification.model.ClassificationSessionManager
-import io.github.x1111101101.glucoseserver.food.classification.dto.ClassificationSessionRespond
 import io.github.x1111101101.glucoseserver.food.classification.dto.ClassificationSessionResponse
 import java.util.UUID
 

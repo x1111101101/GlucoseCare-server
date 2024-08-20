@@ -99,17 +99,22 @@ class ClassificationWorker(private val scope: CoroutineScope) {
             }
         }
         println("CALLED API")
-        val json = JsonParser.parseString(openAiResponse) as JsonObject
-        val choices = json.get("choices") as JsonArray
-        val message = choices.first().asJsonObject
-            .getAsJsonObject("message")
-            .getAsJsonPrimitive("content").asString
-        val root = JsonParser.parseString(message).asJsonArray
-        val predictions = root.asList().map { it.asJsonArray }.map { outer->
-            outer.asList().map { it.asJsonPrimitive.asString }
+        try {
+            val json = JsonParser.parseString(openAiResponse) as JsonObject
+            val choices = json.get("choices") as JsonArray
+            val message = choices.first().asJsonObject
+                .getAsJsonObject("message")
+                .getAsJsonPrimitive("content").asString
+            val root = JsonParser.parseString(message).asJsonArray
+            val predictions = root.asList().map { it.asJsonArray }.map { outer->
+                outer.asList().map { it.asJsonPrimitive.asString }
+            }
+            session.result = DishService.matchPredictions(predictions)
+            session.state = ClassificationSession.State.SUCCEED
+        } catch (e: Exception) {
+            session.state = ClassificationSession.State.ERROR
         }
-        session.result = DishService.matchPredictions(predictions)
-        session.state = ClassificationSession.State.SUCCEED
+
     }
 }
 

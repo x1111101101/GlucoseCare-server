@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ClassificationSessionResponse(
     val sessionUUID: String,
-    val state: ClassificationSession.State,
+    val state: FoodClassificationSessionState,
     val result: List<FoodClassificationResult>
 )
 
@@ -15,3 +15,7 @@ data class FoodClassificationResult(val predictions: List<FoodPrediction>)
 
 @Serializable
 data class FoodPrediction(val openAiName: String, val foodUUID: String, val foodName: String)
+
+enum class FoodClassificationSessionState {
+    READY, SEND, SUCCEED, ERROR
+}
