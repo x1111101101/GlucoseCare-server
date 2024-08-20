@@ -7,6 +7,8 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.*
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.util.*
 
 fun Route.routeClassifications() {
@@ -20,7 +22,7 @@ private fun Route.sessionRoute() {
         get("state/{uuid}") {
             val uuid = UUID.fromString(call.parameters["uuid"])
             val respond = FoodClassificationService.getSessionState(uuid)
-            call.respondText(respond.json().toString(), ContentType.Application.Json)
+            call.respondText(Json.encodeToString(respond), ContentType.Application.Json)
         }
         get("image/{uuid}") {
             val uuid = UUID.fromString(call.parameters["uuid"])

@@ -21,5 +21,5 @@ data class IntakeRecord(
 data class IntakeItem(val foodUUID: String, val unit: IntakeUnit, val grams: Double)
 
 enum class IntakeUnit {
-    SERVING, GRAM
+    SERVING, GRAM, AMOUNT
 }

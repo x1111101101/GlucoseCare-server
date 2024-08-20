@@ -1,6 +1,10 @@
 package io.github.x1111101101.glucoseserver.food.classification.model
 
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import io.github.x1111101101.glucoseserver.PROPERTIES
+import io.github.x1111101101.glucoseserver.food.dish.service.DishService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -56,8 +60,8 @@ class ClassificationWorker(private val scope: CoroutineScope) {
         session.image = compressJpegImage(session.image, COMPRESS_GOAL)
         session.state = ClassificationSession.State.SEND
         val imageUrl = "http://$HOST_ADDRESS/food/classification/session/image/${session.uuid}"
-        val json = promptAIJson("gpt-4-turbo", PROMPT, imageUrl)
-        val requestBody = RequestBody.create("application/json".toMediaTypeOrNull(), json)
+        val apiJson = promptAIJson("gpt-4-turbo", PROMPT, imageUrl)
+        val requestBody = RequestBody.create("application/json".toMediaTypeOrNull(), apiJson)
         val request = Request.Builder()
             .url("https://api.openai.com/v1/chat/completions")
             .headers(
@@ -68,8 +72,8 @@ class ClassificationWorker(private val scope: CoroutineScope) {
             )
             .post(requestBody)
             .build()
-        println(json)
-        val respond = suspendCoroutine {
+        println(apiJson)
+        val openAiResponse = suspendCoroutine {
             try {
                 println("Calling API")
                 client.newCall(request).enqueue(object : Callback {
@@ -95,7 +99,16 @@ class ClassificationWorker(private val scope: CoroutineScope) {
             }
         }
         println("CALLED API")
-        session.result = respond
+        val json = JsonParser.parseString(openAiResponse) as JsonObject
+        val choices = json.get("choices") as JsonArray
+        val message = choices.first().asJsonObject
+            .getAsJsonObject("message")
+            .getAsJsonPrimitive("content").asString
+        val root = JsonParser.parseString(message).asJsonArray
+        val predictions = root.asList().map { it.asJsonArray }.map { outer->
+            outer.asList().map { it.asJsonPrimitive.asString }
+        }
+        session.result = DishService.matchPredictions(predictions)
         session.state = ClassificationSession.State.SUCCEED
     }
 }

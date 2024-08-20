@@ -3,6 +3,10 @@ package io.github.x1111101101.glucoseserver.food.dish.service
 import io.github.x1111101101.glucoseserver.PROPERTIES
 import io.github.x1111101101.glucoseserver.TEMP_SCOPE
 import io.github.x1111101101.glucoseserver.food.FOOD_JSON
+import io.github.x1111101101.glucoseserver.food.classification.dto.ClassificationSessionResponse
+import io.github.x1111101101.glucoseserver.food.classification.dto.FoodClassificationResult
+import io.github.x1111101101.glucoseserver.food.classification.dto.FoodPrediction
+import io.github.x1111101101.glucoseserver.food.classification.model.ClassificationSession
 import io.github.x1111101101.glucoseserver.food.dish.database.dao.DishDao
 import io.github.x1111101101.glucoseserver.food.dish.database.entity.DishEntity
 import io.github.x1111101101.glucoseserver.food.dish.dto.FoodSearchCompleteResponse
@@ -11,12 +15,16 @@ import io.github.x1111101101.glucoseserver.food.dish.model.api.Dish
 import io.github.x1111101101.glucoseserver.food.dish.model.api.Food
 import io.github.x1111101101.glucoseserver.food.dish.model.api.ingredient.Ingredient
 import io.github.x1111101101.glucoseserver.food.dish.repository.DishRepository
+import io.github.x1111101101.glucoseserver.food.dish.util.SearchHelperItem
 import io.github.x1111101101.glucoseserver.food.dish.util.SimpleNameSearchHelper
 import io.github.x1111101101.glucoseserver.food.dish.util.allWeight
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
+import kotlin.math.min
 
 object DishService {
 
@@ -34,10 +42,28 @@ object DishService {
     suspend fun getAllFoodJsons() = repository.getAll().map { it.dishJson }
     suspend fun getAllFoods() = getAllFoodJsons().map { FOOD_JSON.decodeFromString<Food>(it) }
 
-    suspend fun completeSearch(query: String): FoodSearchCompleteResponse {
+    fun completeSearch(query: String): FoodSearchCompleteResponse {
         return FoodSearchCompleteResponse(
             searchHelper.recommend(query).map { FoodSearchCompletionItem(it.uuid.toString(), it.name) }
         )
+    }
+
+    fun matchPredictions(prediction: Collection<Collection<String>>): List<FoodClassificationResult> {
+        val list = ArrayList<FoodClassificationResult>()
+        prediction.forEach { outer->
+            println("O")
+            val matchedItems = HashSet<FoodPrediction>()
+            outer.forEach {
+
+                val matched = searchHelper.recommend(it)
+                println("NAME: ${it}, matched: ${matched.joinToString(", ")}")
+                matchedItems += matched.subList(0, min(5, matched.size)).map { item->
+                    FoodPrediction(it, item.uuid.toString(), item.name)
+                }
+            }
+            list.add(FoodClassificationResult(matchedItems.toList()))
+        }
+        return list
     }
 
     suspend fun findFood(id: UUID): String? {
@@ -74,6 +100,8 @@ object DishService {
             repository.create(DishEntity(UUID.fromString(it.uuid), FOOD_JSON.encodeToString(it)))
         }
     }
+
+
 
     private suspend fun initSearch() {
         getAllFoods().filterIsInstance<Dish>().forEach {

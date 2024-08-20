@@ -1,21 +1,20 @@
 package io.github.x1111101101.glucoseserver.food.dish.util
 
-import io.github.x1111101101.glucoseserver.d
 import java.util.*
-import kotlin.collections.HashMap
-import kotlin.math.min
 
 class SimpleNameSearchHelper {
 
     private val words = HashMap<String, MutableMap<SearchHelperItem, Int>>()
+    private val names = HashMap<String, HashSet<SearchHelperItem>>()
 
     fun add(uuid: UUID, name: String) {
         val item = SearchHelperItem(uuid, name)
         ngram(clearString(name)) { len, s ->
             val map = words.computeIfAbsent(s) { HashMap() }
             val weight = (len * len).let { it * it }
-            map.compute(item) { _, prev -> prev?.plus(weight) ?: weight }
+            map[item] = weight
         }
+        names.computeIfAbsent(name) { HashSet() }.add(item)
     }
 
     fun remove(uuid: UUID, name: String) {
@@ -23,10 +22,14 @@ class SimpleNameSearchHelper {
         ngram(clearString(name)) { len, s ->
             words[s]?.remove(item)
         }
+        names[name]?.remove(item)
     }
 
     fun recommend(query: String): List<SearchHelperItem> {
         val scores = HashMap<SearchHelperItem, Int>()
+        names[query]?.forEach {
+            scores[it] = 10000
+        }
         ngram(clearString(query)) { _, s ->
             println("${s}")
             val matched = words[s] ?: return@ngram
@@ -34,9 +37,9 @@ class SimpleNameSearchHelper {
                 scores[item] = (scores[item] ?: 0) + weight
             }
         }
-        val filtered = if(scores.size > 20) {
+        val filtered = if (scores.size > 20) {
             val weightAvg = scores.values.sum() / scores.size.toDouble()
-            scores.filterValues { it >= weightAvg*0.8 }
+            scores.filterValues { it >= weightAvg * 0.8 }
         } else scores
         val sorted = filtered.toList().sortedByDescending { it.second }
         println()
@@ -52,11 +55,11 @@ class SimpleNameSearchHelper {
 
 data class SearchHelperItem(val uuid: UUID, val name: String)
 
-private fun ngram(s: String, action: (length: Int, String)->Unit) {
-    for(len in 1..s.length) {
+private fun ngram(s: String, action: (length: Int, String) -> Unit) {
+    for (len in 1..s.length) {
         var start = 0
-        while(start+len <= s.length) {
-            val sub = s.substring(start, start+len)
+        while (start + len <= s.length) {
+            val sub = s.substring(start, start + len)
             start++
             action(len, sub)
         }
