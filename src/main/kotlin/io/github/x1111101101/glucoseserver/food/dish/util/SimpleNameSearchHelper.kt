@@ -31,7 +31,6 @@ class SimpleNameSearchHelper {
             scores[it] = 10000
         }
         ngram(clearString(query)) { _, s ->
-            println("${s}")
             val matched = words[s] ?: return@ngram
             matched.forEach { (item, weight) ->
                 scores[item] = (scores[item] ?: 0) + weight
@@ -42,8 +41,6 @@ class SimpleNameSearchHelper {
             scores.filterValues { it >= weightAvg * 0.8 }
         } else scores
         val sorted = filtered.toList().sortedByDescending { it.second }
-        println()
-        println(sorted.toList().joinToString("\n"))
         return sorted.map { it.first }
     }
 

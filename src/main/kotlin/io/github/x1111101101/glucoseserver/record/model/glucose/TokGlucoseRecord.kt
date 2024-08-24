@@ -14,17 +14,11 @@ data class TokGlucoseRecord(
     override val deleted: Boolean,
     override val time: Int,
     val value: Int,
-    val timing: String
+    val timing: GlucoseRecordTiming
 ): Record, DayTimeHolder {
 
     @SerialName("recordType")
     override val type: RecordType
         get() = RecordType.GLUCOSE
-
-    companion object {
-        const val TIMING_AFTER_INTAKE = "AFTER_INTAKE"
-        const val TIMING_BEFORE_INTAKE = "BEFORE_INTAKE"
-        const val TIMING_UNKNOWN = "UNKNOWN"
-    }
 
 }

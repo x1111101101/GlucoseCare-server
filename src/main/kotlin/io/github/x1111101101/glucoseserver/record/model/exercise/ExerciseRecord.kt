@@ -12,7 +12,7 @@ data class ExerciseRecord(
     override val uuid: String = UUID.randomUUID().toString(),
     override val version: Long,
     override val date: Int,
-    val time: Int,
+    override val time: Int,
     val durationInSeconds: Int,
     val extraData: ExerciseExtraData,
     val tags: List<String> = emptyList()

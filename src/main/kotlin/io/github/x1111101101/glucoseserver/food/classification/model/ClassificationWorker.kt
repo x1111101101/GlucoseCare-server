@@ -30,6 +30,7 @@ private val OPENAI_TOKEN = PROPERTIES["OPENAI_TOKEN"].toString()
 private val HOST_ADDRESS = PROPERTIES["HOST_ADDRESS"].toString()
 private val PROMPT = PROPERTIES["CLASSIFICATION_PROMPT"].toString()
 private val VALIDATION_PROMPT = MessageFormat(PROPERTIES["CLASSIFICATION_VALIDATION_PROMPT"].toString())
+private val VALIDATION_PROMPT_V2 = MessageFormat(PROPERTIES["CLASSIFICATION_VALIDATION_PROMPT_V2"].toString())
 
 class ClassificationWorker(private val scope: CoroutineScope) {
 
@@ -68,8 +69,8 @@ class ClassificationWorker(private val scope: CoroutineScope) {
         session.state = ClassificationSession.State.SEND
         val imageUrl = "http://$HOST_ADDRESS/food/classification/session/image/${session.uuid}"
         val apiJson = promptJsonWithImage("gpt-4-turbo", PROMPT, imageUrl)
+        println("IMG")
         val message = doPrompt(apiJson)
-        println("CALLED API")
         try {
             // Query
             val root = JsonParser.parseString(message).asJsonArray
@@ -83,8 +84,8 @@ class ClassificationWorker(private val scope: CoroutineScope) {
             // Validation
             println("START VALIDATION")
             val namesFromOpenAi = matchedPredictions.map {
-                it.predictions.map { it.openAiName }
-            }
+                it.predictions.firstOrNull()?.openAiName
+            }.filterNotNull()
             val namesInDb = matchedPredictions.map {
                 it.predictions.map { it.foodName }
             }
@@ -97,25 +98,19 @@ class ClassificationWorker(private val scope: CoroutineScope) {
             }.toString()
             val namesInDbJson = JsonArray().also { arr ->
                 namesInDb.forEach { li ->
-                    val innerArr = JsonArray()
-                    arr.add(innerArr)
-                    li.forEach { innerArr.add(it) }
+                    li.forEach { arr.add(it) }
                 }
             }.toString()
             val validationMessage = doPrompt(
                 promptJson(
                     "gpt-4-turbo",
-                    VALIDATION_PROMPT.format(arrayOf(namesFromOpenAiJson, namesInDbJson))
+                    VALIDATION_PROMPT_V2.format(arrayOf(namesFromOpenAi.joinToString(", "), namesInDbJson))
                 )
             )
             println("validationMessage: ${validationMessage}")
-            val validationArray = JsonParser.parseString(validationMessage).asJsonArray
-                .map { it.asJsonArray.map { it.asJsonPrimitive.asString }.toHashSet() }
-            val validPredictions = matchedPredictions.toMutableList()
-            repeat(min(validPredictions.size, validationArray.size)) { idx ->
-                validPredictions[idx] = FoodClassificationResult(validPredictions[idx].predictions.filter {
-                    !validationArray[idx].contains(it.foodName)
-                })
+            val toRemove = JsonParser.parseString(validationMessage).asJsonArray.map { it.asString }.toHashSet()
+            val validPredictions = matchedPredictions.map {
+                it.copy(predictions = it.predictions.filter { !toRemove.contains(it.foodName) })
             }
             session.state = ClassificationSession.State.SUCCEED_VALID
             session.result = validPredictions
@@ -142,7 +137,7 @@ class ClassificationWorker(private val scope: CoroutineScope) {
         println(apiJson)
         val openAiResponse = suspendCoroutine {
             try {
-                println("Calling API")
+                println("Calling API: $apiJson")
                 client.newCall(request).enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {
                         it.resumeWithException(e)

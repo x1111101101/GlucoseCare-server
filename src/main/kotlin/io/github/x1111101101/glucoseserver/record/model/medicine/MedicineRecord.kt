@@ -11,7 +11,7 @@ data class MedicineRecord(
     override val uuid: String,
     override val version: Long,
     override val date: Int,
-    val time: Int,
+    override val time: Int,
     val timing: MedicineTiming,
     val medicines: List<Pair<Medicine, MedicineVolume>>
 ): Record {

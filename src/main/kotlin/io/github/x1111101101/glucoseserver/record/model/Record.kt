@@ -1,7 +1,7 @@
 package io.github.x1111101101.glucoseserver.record.model
 
 
-interface Record {
+interface Record: DayTimeHolder {
     val uuid: String
     val version: Long
     val date: Int
