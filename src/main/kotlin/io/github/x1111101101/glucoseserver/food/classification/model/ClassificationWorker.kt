@@ -4,7 +4,6 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import io.github.x1111101101.glucoseserver.PROPERTIES
-import io.github.x1111101101.glucoseserver.food.classification.dto.FoodClassificationResult
 import io.github.x1111101101.glucoseserver.food.dish.service.DishService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -24,7 +23,6 @@ import javax.imageio.ImageWriter
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
-import kotlin.math.min
 
 private val OPENAI_TOKEN = PROPERTIES["OPENAI_TOKEN"].toString()
 private val HOST_ADDRESS = PROPERTIES["HOST_ADDRESS"].toString()
@@ -68,14 +66,16 @@ class ClassificationWorker(private val scope: CoroutineScope) {
         session.image = compressJpegImage(session.image, COMPRESS_GOAL)
         session.state = ClassificationSession.State.SEND
         val imageUrl = "http://$HOST_ADDRESS/food/classification/session/image/${session.uuid}"
-        val apiJson = promptJsonWithImage("gpt-4-turbo", PROMPT, imageUrl)
+        val apiJson = promptJsonWithImage("gpt-4o", PROMPT, imageUrl)
         println("IMG")
         val message = doPrompt(apiJson)
         try {
             // Query
             val root = JsonParser.parseString(message).asJsonArray
-            val predictions = root.asList().map { it.asJsonArray }.map { outer ->
-                outer.asList().map { it.asJsonPrimitive.asString }
+            val predictions = root.asList().map { it.asJsonObject}.map { outer ->
+                outer.get("names").asJsonArray.asList().map {
+                    it.asString
+                }
             }
             val matchedPredictions = DishService.matchPredictions(predictions)
             session.result = matchedPredictions
@@ -83,9 +83,9 @@ class ClassificationWorker(private val scope: CoroutineScope) {
 
             // Validation
             println("START VALIDATION")
-            val namesFromOpenAi = matchedPredictions.map {
-                it.predictions.firstOrNull()?.openAiName
-            }.filterNotNull()
+            val namesFromOpenAi = matchedPredictions.filter { it.predictions.isNotEmpty() }.map {
+                it.predictions.map { it.openAiName }
+            }.flatten().toHashSet()
             val namesInDb = matchedPredictions.map {
                 it.predictions.map { it.foodName }
             }
@@ -103,14 +103,14 @@ class ClassificationWorker(private val scope: CoroutineScope) {
             }.toString()
             val validationMessage = doPrompt(
                 promptJson(
-                    "gpt-4-turbo",
+                    "gpt-4o",
                     VALIDATION_PROMPT_V2.format(arrayOf(namesFromOpenAi.joinToString(", "), namesInDbJson))
                 )
             )
             println("validationMessage: ${validationMessage}")
-            val toRemove = JsonParser.parseString(validationMessage).asJsonArray.map { it.asString }.toHashSet()
+            val matched = JsonParser.parseString(validationMessage).asJsonArray.map { it.asString }.toHashSet()
             val validPredictions = matchedPredictions.map {
-                it.copy(predictions = it.predictions.filter { !toRemove.contains(it.foodName) })
+                it.copy(predictions = it.predictions.filter { matched.contains(it.foodName) })
             }
             session.state = ClassificationSession.State.SUCCEED_VALID
             session.result = validPredictions
