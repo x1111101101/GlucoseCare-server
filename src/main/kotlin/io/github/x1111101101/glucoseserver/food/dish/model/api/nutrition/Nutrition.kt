@@ -28,6 +28,20 @@ data class Nutrition(
 
     }
 
+    operator fun plus(other: Nutrition): Nutrition {
+        return Nutrition(
+            calories + other.calories,
+            water + other.water,
+            carbohydrate + other.carbohydrate,
+            protein + other.protein,
+            salt + other.salt,
+            fat + other.fat,
+            dietaryFiber + other.dietaryFiber
+        )
+    }
+
+    operator fun times(ratio: Double) = multiply(ratio)
+
     fun multiply(ratio: Double): Nutrition {
         return Nutrition(
             calories = calories * ratio,
@@ -38,6 +52,10 @@ data class Nutrition(
             water = water * ratio,
             dietaryFiber = dietaryFiber * ratio
         )
+    }
+
+    companion object {
+        val EMPTY = Nutrition(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     }
 
 }
