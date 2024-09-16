@@ -5,6 +5,7 @@ import io.github.x1111101101.glucoseserver.record.model.RecordType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@SerialName("MedicineRecord")
 @Serializable
 data class MedicineRecord(
     override val deleted: Boolean,

@@ -3,9 +3,11 @@ package io.github.x1111101101.glucoseserver.record.model.exercise
 import io.github.x1111101101.glucoseserver.record.model.Record
 import io.github.x1111101101.glucoseserver.record.model.RecordType
 import io.github.x1111101101.glucoseserver.record.model.exercise.extra.ExerciseExtraData
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*
 
+@SerialName("ExerciseRecord")
 @Serializable
 data class ExerciseRecord(
     override val deleted: Boolean = false,
