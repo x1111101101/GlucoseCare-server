@@ -13,6 +13,7 @@ data class Nutrition(
     val dietaryFiber: Double,
 ) {
 
+
     init {
         if(listOf(
             calories,

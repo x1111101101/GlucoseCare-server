@@ -15,7 +15,7 @@ class RecordWrap {
     constructor(record: Record, userId: String) {
         this.userId = userId
         this.recordId = record.uuid
-        this.recordType = record.type.name
+        this.recordType = record.recordType.name
         this.recordJsonBody = Json.encodeToString(record)
         this.date = record.date
     }

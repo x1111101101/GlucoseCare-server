@@ -17,5 +17,5 @@ data class ExerciseRecord(
     val extraData: ExerciseExtraData,
     val tags: List<String> = emptyList()
 ): Record {
-    override val type: RecordType get() = RecordType.EXERCISE_SESSION
+    override val recordType: RecordType get() = RecordType.EXERCISE_SESSION
 }

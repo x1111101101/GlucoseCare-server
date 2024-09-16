@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 data class FoodSearchCompleteResponse(val result: List<FoodSearchCompletionItem>)
 
 @Serializable
-data class FoodSearchCompletionItem(val uuid: String, val name: String) {
+data class FoodSearchCompletionItem(val id: String, val name: String) {
 
 }

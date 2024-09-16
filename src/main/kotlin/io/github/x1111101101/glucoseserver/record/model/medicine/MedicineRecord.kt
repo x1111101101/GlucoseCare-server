@@ -13,8 +13,9 @@ data class MedicineRecord(
     override val date: Int,
     override val time: Int,
     val timing: MedicineTiming,
+    val prescriptionId: String = "",
     val medicines: List<Pair<Medicine, MedicineVolume>>
 ): Record {
     @SerialName("recordType")
-    override val type: RecordType get() = RecordType.TAKE_MEDICINE
+    override val recordType: RecordType get() = RecordType.TAKE_MEDICINE
 }

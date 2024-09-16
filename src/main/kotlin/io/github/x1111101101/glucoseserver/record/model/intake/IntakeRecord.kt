@@ -17,7 +17,7 @@ data class IntakeRecord(
     val items: List<IntakeItem> = emptyList(),
     val totalNutrition: Nutrition
 ): Record {
-    override val type: RecordType = RecordType.INTAKE
+    override val recordType: RecordType = RecordType.INTAKE
 }
 
 @Serializable

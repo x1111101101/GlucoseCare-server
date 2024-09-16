@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class FoodExchange(val group: FoodExchangeGroup, val unit: Double) {
 
     init {
-        if(group == FoodExchangeGroup.NONE && unit != 0.0) throw IllegalArgumentException()
+        
     }
 
     companion object {

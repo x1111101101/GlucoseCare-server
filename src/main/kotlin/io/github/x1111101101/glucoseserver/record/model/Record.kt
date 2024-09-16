@@ -6,5 +6,5 @@ interface Record: DayTimeHolder {
     val version: Long
     val date: Int
     val deleted: Boolean
-    val type: RecordType
+    val recordType: RecordType
 }

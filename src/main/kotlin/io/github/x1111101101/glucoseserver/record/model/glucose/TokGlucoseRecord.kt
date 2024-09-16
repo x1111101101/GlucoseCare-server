@@ -18,7 +18,7 @@ data class TokGlucoseRecord(
 ): Record, DayTimeHolder {
 
     @SerialName("recordType")
-    override val type: RecordType
+    override val recordType: RecordType
         get() = RecordType.GLUCOSE
 
 }
