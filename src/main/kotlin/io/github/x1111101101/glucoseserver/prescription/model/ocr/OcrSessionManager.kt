@@ -13,6 +13,7 @@ object OcrSessionManager {
 
     private val sessions = ConcurrentHashMap<UUID, OcrSession>()
 
+
     fun startSession(image: ByteArray): Deferred<Pair<UUID, String>> {
         val session = OcrSession(image)
         sessions[session.uuid] = session
@@ -28,7 +29,6 @@ object OcrSessionManager {
     fun getSession(uuid: UUID) = sessions[uuid]
 
 
-
 }
 
 @Throws(Exception::class)
@@ -41,7 +41,6 @@ fun extractTextFromImage(image: ByteArray): String {
         .build()
     val requests: MutableList<AnnotateImageRequest> = ArrayList<AnnotateImageRequest>()
     requests.add(request)
-
     ImageAnnotatorClient.create().use { client ->
         val response: BatchAnnotateImagesResponse = client.batchAnnotateImages(requests)
         val stringBuilder = StringBuilder()

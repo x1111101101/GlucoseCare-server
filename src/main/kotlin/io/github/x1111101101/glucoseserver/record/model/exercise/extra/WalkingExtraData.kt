@@ -4,8 +4,10 @@ import io.github.x1111101101.glucoseserver.record.model.exercise.ExerciseType
 import io.github.x1111101101.glucoseserver.record.model.exercise.extra.dataholder.AutoCollectedDataHolder
 import io.github.x1111101101.glucoseserver.record.model.exercise.extra.dataholder.BurnedCaloriesDataHolder
 import io.github.x1111101101.glucoseserver.record.model.exercise.extra.dataholder.StepsDataHolder
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@SerialName("WalkingExtraData")
 @Serializable
 data class WalkingExtraData(
     override val stepCount: Int,

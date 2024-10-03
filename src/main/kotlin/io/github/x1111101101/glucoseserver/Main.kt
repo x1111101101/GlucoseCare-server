@@ -14,19 +14,16 @@ import io.ktor.server.routing.*
 
 fun main() {
     init()
-    embeddedServer(Netty, port = 5101) {
+    embeddedServer(Netty, port = 5001) {
         module()
     }.start(wait = true)
 }
 
 private fun init() {
     connectDB()
-    initGoogleCloud()
 }
 
-private fun initGoogleCloud() {
-    System.setProperty("GOOGLE_APPLICATION_CREDENTIALS", PROPERTIES["GOOGLE_APPLICATION_CREDENTIALS"].toString())
-}
+
 
 fun Application.module() {
     routing {
