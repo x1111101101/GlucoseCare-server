@@ -1,4 +1,4 @@
-package io.github.x1111101101.glucoseserver.prescription.model.ocr
+package io.github.x1111101101.glucoseserver.prescription.model.internal.ocr
 
 import java.util.UUID
 

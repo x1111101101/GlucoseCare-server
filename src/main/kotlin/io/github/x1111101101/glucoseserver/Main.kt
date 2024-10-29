@@ -26,6 +26,7 @@ private fun init() {
 
 
 fun Application.module() {
+
     routing {
         get("") {
             call.respond("HI")
@@ -37,4 +38,11 @@ fun Application.module() {
     routeRecords()
     routeAdmins()
     DishService
+    initGoogleCloud()
+}
+
+
+private fun initGoogleCloud() {
+    println("KEY: " + System.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+    System.setProperty("GOOGLE_APPLICATION_CREDENTIALS", PROPERTIES["GOOGLE_APPLICATION_CREDENTIALS"].toString())
 }

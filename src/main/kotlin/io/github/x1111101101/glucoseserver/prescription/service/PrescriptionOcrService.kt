@@ -2,7 +2,7 @@ package io.github.x1111101101.glucoseserver.prescription.service
 
 import com.google.auth.oauth2.GoogleCredentials
 import io.github.x1111101101.glucoseserver.PROPERTIES
-import io.github.x1111101101.glucoseserver.prescription.model.ocr.OcrSessionManager
+import io.github.x1111101101.glucoseserver.prescription.model.internal.ocr.OcrSessionManager
 import java.io.File
 import java.util.*
 
