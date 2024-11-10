@@ -22,7 +22,6 @@ object OcrTest1 {
     ) {
         val uuid = UUID.randomUUID()
 
-
         fun append(box: Box) {
             x.append(box.x)
             y.append(box.y)
@@ -66,6 +65,8 @@ object OcrTest1 {
 
     fun test(data: AnnotateImageResponse) {
         val textAnnotations = data.textAnnotationsList
+        data.fullTextAnnotation.pagesCount.let { println("PG: ${it}") }
+
         println("FT: ${data.fullTextAnnotation.text}")
         val visit = HashSet<UUID>()
         val merged = ArrayList<Pair<Box, Set<EntityAnnotation>>>()

@@ -11,6 +11,7 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.opencv.core.Core
 
 fun main() {
     init()
@@ -21,6 +22,7 @@ fun main() {
 
 private fun init() {
     connectDB()
+    System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 }
 
 

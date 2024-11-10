@@ -5,5 +5,5 @@ enum class MedicineTiming(val display: String) {
     BEFORE_BREAKFAST("아침 식사 전"), AFTER_BREAKFAST("아침 식사 후"),
     BEFORE_LUNCH("점심 식사 전"), AFTER_LUNCH("점심 식사 후"),
     BEFORE_DINNER("저녁 식사 전"), AFTER_DINNER("저녁 식사 후"),
-    BEFORE_SLEEP("취침 전"),
+    BEFORE_SLEEP("취침 전"), ETC("기타")
 }

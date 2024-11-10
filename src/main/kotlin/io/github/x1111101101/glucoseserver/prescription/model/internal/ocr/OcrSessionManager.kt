@@ -2,6 +2,7 @@ package io.github.x1111101101.glucoseserver.prescription.model.internal.ocr
 
 import com.google.cloud.vision.v1.*
 import com.google.protobuf.ByteString
+import com.google.protobuf.Descriptors.FieldDescriptor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
