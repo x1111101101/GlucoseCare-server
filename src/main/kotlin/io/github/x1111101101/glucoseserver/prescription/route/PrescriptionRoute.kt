@@ -6,6 +6,7 @@ import io.github.x1111101101.glucoseserver.prescription.model.internal.ocr.extra
 import io.github.x1111101101.glucoseserver.prescription.service.PrescriptionOcrService
 import io.github.x1111101101.glucoseserver.prescription.util.ocr.GoogleVisionLineSegmentationParser
 import io.github.x1111101101.glucoseserver.prescription.util.ocr.OcrTest1
+import io.github.x1111101101.glucoseserver.prescription.util.ocr.OcrTest3
 import io.github.x1111101101.glucoseserver.prescription.util.ocr.parsePrescription
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -75,6 +76,21 @@ private fun Route.routePrescriptionOcr() {
             val json = response.toString()
             sb.append(json)
             call.respondText(sb.toString())
+        }
+    }
+    route("ocrtest3") {
+        get {
+            var f = call.request.queryParameters["f"].toString().replace("\n", "/")
+            println(f)
+            val imageFile = File(PROPERTIES["TEST_FOLDER"].toString(), f)
+            println(imageFile)
+            if(!imageFile.isFile) {
+                println("file not found")
+                call.respond(HttpStatusCode.BadRequest)
+                return@get
+            }
+            OcrTest3.test(imageFile)
+
         }
     }
 

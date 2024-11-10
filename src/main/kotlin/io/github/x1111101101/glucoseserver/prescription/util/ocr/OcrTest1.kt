@@ -73,6 +73,8 @@ object OcrTest1 {
         val boxes = textAnnotations.map { it.toBox() to hashSetOf(it) }.sortedBy { it.first.y.min }
             .filter { it.first.y.run { max - min } < 100 }
         avrLineHeight = calcAvrLineHeight(boxes.map { it.first })
+
+
         var i = 0
         while (i in boxes.indices) {
             val entry = boxes[i]
