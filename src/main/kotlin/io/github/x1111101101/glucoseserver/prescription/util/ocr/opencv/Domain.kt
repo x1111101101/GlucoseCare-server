@@ -60,6 +60,26 @@ object OpenCVUtil {
         }
     }
 
+    fun detectTableCells(docAreaFile: File): List<RotatedRect> {
+        val docArea = Imgcodecs.imread(docAreaFile.absolutePath)
+        var (docGray, docBinary, linesEmphasized, hLineEmphasized) = arrayOfNulls<Mat>(4)
+        try {
+            docGray = grayScale(docArea)
+            docBinary = Mat()
+            Imgproc.adaptiveThreshold(docGray, docBinary, 255.0, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 15, 10.0)
+            linesEmphasized = emphasizeLines2(docBinary)
+            hLineEmphasized = emphasizeLines2(docBinary, false)
+            Core.bitwise_or(hLineEmphasized, linesEmphasized, linesEmphasized)
+            val contours = mutableListOf<MatOfPoint>()
+            val hierarchy = Mat()
+            Core.bitwise_not(linesEmphasized, linesEmphasized)
+            Imgproc.findContours(linesEmphasized, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
+            return getOBBContours(linesEmphasized)
+        } finally {
+            releaseMats(docArea, linesEmphasized, docBinary, docGray, hLineEmphasized)
+        }
+    }
+
     fun detectVerticalLines(docAreaFile: File): List<Pair<Point, Point>> {
         val docArea = Imgcodecs.imread(docAreaFile.absolutePath)
         var (docGray, docBinary, linesEmphasized, hLineEmphasized) = arrayOfNulls<Mat>(4)
@@ -73,27 +93,10 @@ object OpenCVUtil {
 
             val contours = mutableListOf<MatOfPoint>()
             val hierarchy = Mat()
-            Core.bitwise_not(linesEmphasized, linesEmphasized)
             Imgproc.findContours(linesEmphasized, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
-
-            val boundingBoxes = contours.map { contour -> Imgproc.boundingRect(contour) }
-            val vs = docArea.clone()
-
-            boundingBoxes.forEach {
-                val random = Math.random() * 500
-                Imgproc.rectangle(vs, it, Scalar(100+random), 2)
-            }
-            imshow("VS", vs)
-
             return detectLinesFromBinary(linesEmphasized)
-            /*
-            + listOf(
-                Point(0.0, 0.0) to Point(0.0, docArea.height().toDouble()),
-                Point(docArea.width().toDouble(), 0.0) to Point(docArea.width().toDouble(), docArea.height().toDouble())
-            )
-             */
         } finally {
-            releaseMats(docArea, linesEmphasized, docBinary, docGray)
+            releaseMats(docArea, linesEmphasized, docBinary, docGray, hLineEmphasized)
         }
     }
 
@@ -184,7 +187,6 @@ private fun emphasizeLines2(docBinary: Mat, vertical: Boolean = true): Mat {
         repeat(repeat) {
             Imgproc.morphologyEx(morphed, morphed, operation, kernel)
         }
-        imshow("k_${i}", morphed)
         releaseMats(kernel)
     }
     return morphed
