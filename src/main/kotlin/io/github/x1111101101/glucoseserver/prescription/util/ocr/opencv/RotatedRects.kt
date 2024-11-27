@@ -2,6 +2,9 @@ package io.github.x1111101101.glucoseserver.prescription.util.ocr.opencv
 
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
+import java.lang.Math.toDegrees
+import kotlin.math.atan2
+import kotlin.math.hypot
 
 fun getOBBContours(binaryMat: Mat): List<RotatedRect> {
     val contours = mutableListOf<MatOfPoint>()
@@ -30,4 +33,29 @@ fun rotatedRectIntersectionArea(rect1: RotatedRect, rect2: RotatedRect): Float {
     poly1.release()
     poly2.release()
     return intersectionArea
+}
+
+fun createRotatedRect(x1: Double, y1: Double, x2: Double, y2: Double, width: Double): RotatedRect {
+    val centerX = (x1 + x2) / 2
+    val centerY = (y1 + y2) / 2
+    val center = Point(centerX, centerY)
+
+    val height = hypot(x2 - x1, y2 - y1)
+    val angle = toDegrees(atan2(y2 - y1, x2 - x1))
+
+    return RotatedRect(center, org.opencv.core.Size(width, height), angle)
+}
+
+fun drawRotatedRect(image: Mat, rotatedRect: RotatedRect, color: Scalar = Scalar(0.0, 255.0, 0.0), thickness: Int = 2) {
+    val vertices = arrayOfNulls<Point>(4)
+    rotatedRect.points(vertices)
+    for (i in vertices.indices) {
+        Imgproc.line(
+            image,
+            vertices[i],
+            vertices[(i + 1) % vertices.size],
+            color,
+            thickness
+        )
+    }
 }

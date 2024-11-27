@@ -4,6 +4,8 @@ import com.google.cloud.vision.v1.EntityAnnotation
 import io.github.x1111101101.glucoseserver.prescription.model.internal.ocr.callGVO
 import io.github.x1111101101.glucoseserver.prescription.util.ocr.OcrTest1.Box
 import io.github.x1111101101.glucoseserver.prescription.util.ocr.opencv.OpenCVUtil
+import io.github.x1111101101.glucoseserver.prescription.util.ocr.opencv.drawRotatedRect
+import io.github.x1111101101.glucoseserver.prescription.util.ocr.opencv.imshow
 import org.opencv.core.Point
 import org.opencv.core.Scalar
 import org.opencv.imgcodecs.Imgcodecs
@@ -49,8 +51,13 @@ object OcrTest3 {
             //Imgproc.putText(mat, string, Point(bb.x.min.toDouble(), bb.y.min.toDouble()), Imgproc.FONT_HERSHEY_SIMPLEX, 1.0, Scalar(50.0))
         }
         lines.forEach {
-            Imgproc.line(mat, it.first, it.second, Scalar(0.0, 0.0, 255.0))
+            //Imgproc.line(mat, it.first, it.second, Scalar(0.0, 0.0, 255.0))
         }
+        val cells = OpenCVUtil.detectTableCells(tempFile)
+        cells.forEach { obb->
+            drawRotatedRect(mat, obb)
+        }
+        imshow("TEST", mat)
         val outputFile = File("C:\\Users\\Sangyeob\\Desktop\\p_ocr\\test2", "test.png")
         Imgcodecs.imwrite(outputFile.absolutePath, mat)
         println("lineCount: ${lines.size}")
