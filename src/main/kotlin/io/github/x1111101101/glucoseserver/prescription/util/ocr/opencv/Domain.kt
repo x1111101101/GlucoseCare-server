@@ -73,6 +73,7 @@ object OpenCVUtil {
             val contours = mutableListOf<MatOfPoint>()
             val hierarchy = Mat()
             Core.bitwise_not(linesEmphasized, linesEmphasized)
+            imshow("BN", linesEmphasized)
             Imgproc.findContours(linesEmphasized, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE)
             return getOBBContours(linesEmphasized)
         } finally {

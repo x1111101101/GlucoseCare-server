@@ -29,6 +29,17 @@ object PrescriptionOcrUtil {
         val boxes = textAnnotations.map { it.toBox() to it }.sortedBy { it.first.y.min }
             .filter { it.first.y.run { max - min } < 100 }
         val mat = Imgcodecs.imread(documentAreaFile.absolutePath) // 시각화용
+        val mat2 = Imgcodecs.imread(documentAreaFile.absolutePath) // 시각화용
+
+        boxes.forEach {
+            val (bb, ann) = it
+            val (x1, x2) = bb.x
+            val (y1, y2) = bb.y
+            val textRect = Rect(x1, y1, x2 - x1, y2 - y1)
+            Imgproc.rectangle(mat2, textRect, Scalar(0.0, 0.0, 255.0), 2)
+        }
+        imshow("TEXTS", mat2)
+
         val cells = OpenCVUtil.detectTableCells(documentAreaFile)
         val groups = group(cells, boxes)
         groups.forEach {
@@ -45,7 +56,7 @@ object PrescriptionOcrUtil {
                 Imgproc.rectangle(mat, textRect, color, 2)
             }
         }
-        imshow("", mat)
+        imshow("matched", mat)
         return PrescriptionOcrResult(emptyList())
     }
 
@@ -74,6 +85,8 @@ object PrescriptionOcrUtil {
             val maxIdx = findMaxIntersected(bb)
             if (maxIdx >= 0) {
                 array[maxIdx] += it
+            } else {
+                println("Mismatch: ${it.second.description}")
             }
         }
 

@@ -34,7 +34,7 @@ object OcrSessionManager {
 
 }
 
-fun callGVO(image: ByteArray, type: Feature.Type = Feature.Type.TEXT_DETECTION): BatchAnnotateImagesResponse {
+fun callGVO(image: ByteArray, type: Feature.Type = Feature.Type.DOCUMENT_TEXT_DETECTION): BatchAnnotateImagesResponse {
     val img: Image = Image.newBuilder().setContent(ByteString.copyFrom(image)).build()
     val feat: Feature = Feature.newBuilder().setType(type).build()
     val request: AnnotateImageRequest = AnnotateImageRequest.newBuilder()
